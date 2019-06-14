@@ -32,11 +32,12 @@ FacePlate::~FacePlate() {
 void FacePlate::begin() {
 	DEBUG_PRINTLN(F("Initializing faceplate"));
 
+	eyes.begin();
+
 	pinMode(activatePin, INPUT_PULLUP);
 
 	servo.attach(servoPin, MIN_SRVO_PWM, MAX_SRVO_PWM);
 	servo.write(FACE_POS_OPEN);
-	eyes.begin();
 
 	attachInterrupt(digitalPinToInterrupt(activatePin), debounceButton, FALLING);
 }
@@ -46,6 +47,7 @@ bool FacePlate::isIdle() {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		rv = state == S_IDLE;
 	}
+	DEBUG_PRINT2(F("Faceplate state="), state);
 	return rv;
 }
 
