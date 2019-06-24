@@ -14,6 +14,7 @@
 // 0x4B is the default i2c address of the audio amp
 constexpr auto MAX9744_I2CADDR = 0x4B;
 constexpr auto DEFAULT_VOLUME = 25;
+constexpr auto FX_BOARD_SPEED = 9600;
 
 
 volatile SoundPlayer::State SoundPlayer::state = SoundPlayer::State::S_IDLE;
@@ -31,6 +32,7 @@ SoundPlayer::~SoundPlayer() {}
 
 void SoundPlayer::begin() {
 	DEBUG_PRINTLN(F("Initializing sound system...."));
+	ss.begin(FX_BOARD_SPEED);
 	Wire.begin();
 
 	pinMode(rstPin, INPUT);

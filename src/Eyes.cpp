@@ -51,7 +51,7 @@ void Eyes::activate() {
 }
 
 void Eyes::deactivate() {
-	state = S_FADE_OFF;
+	state = S_DEACTIVATE_EYES;
 }
 
 void Eyes::processState() {
@@ -147,6 +147,10 @@ void Eyes::processState() {
 				++blinkCnt;
 				state = S_BLINK_ON;
 			}
+			break;
+
+		case S_DEACTIVATE_EYES:
+			state = S_FADE_OFF;
 			break;
 	}
 }
