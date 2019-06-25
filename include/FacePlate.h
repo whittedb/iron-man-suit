@@ -25,7 +25,6 @@ class FacePlate {
 		void close();
 		bool isOpen() { return faceplateOpen;  }
 		bool isIdle();
-		bool isPoweredUp();
 		void processState();
 		void startup();
 		void shutdown();
@@ -44,7 +43,6 @@ class FacePlate {
 			S_SHUTDOWN
 		};
 
-		void setPoweredUp(bool powered_up);
 		void setState(State new_state);
 		State getState();
 		void debounceButton();
@@ -57,7 +55,7 @@ class FacePlate {
 		SoundPlayer &sfx;
 		Servo servo;
 		bool faceplateOpen = true;
-		bool poweredUp = false;
+		bool firstTime = true;
 		bool shuttingDown = false;
 		MyTimer timer;
 		State state = S_OFF;

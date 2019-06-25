@@ -52,26 +52,34 @@ bool FacePlate::isIdle() {
 }
 
 void FacePlate::open() {
-	if (isIdle() && !faceplateOpen) {
-		setState(S_OPENING);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (state == S_IDLE && !faceplateOpen) {
+			setState(S_OPENING);
+		}
 	}
 }
 
 void FacePlate::close() {
-	if (isIdle() && faceplateOpen) {
-		setState(S_CLOSING);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (state == S_IDLE && faceplateOpen) {
+			setState(S_CLOSING);
+		}
 	}
 }
 
 void FacePlate::startup() {
-	if (!isPoweredUp()) {
-		setState(S_STARTUP);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (state == S_OFF) {
+			setState(S_STARTUP);
+		}
 	}
 }
 
 void FacePlate::shutdown() {
-	if (isPoweredUp()) {
-		setState(S_SHUTDOWN);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (state != S_OFF) {
+			setState(S_SHUTDOWN);
+		}
 	}
 }
 
@@ -88,7 +96,6 @@ void FacePlate::processState() {
 		case S_STARTUP:
 			DEBUG_PRINTLN(F("Starting faceplate system"));
 			setState(S_OPENING);
-			setPoweredUp(true);
 			break;
 
 		case S_FACEPLATE_REQUEST:
@@ -121,7 +128,7 @@ void FacePlate::processState() {
 				if (shuttingDown) {
 					eyes.shutdown();
 					shuttingDown = false;
-					setPoweredUp(false);
+					firstTime = true;
 					setState(S_OFF);
 				}
 				else {
@@ -136,17 +143,21 @@ void FacePlate::processState() {
 			if(timer.expired()) {
 				DEBUG_PRINTLN(F("Helmet closed..."));
 				eyes.activate();
-				sfx.playFx(SFX_HELMET_CLOSE_SND, true, true);
-				faceplateOpen = false;
+				sfx.playFx(SFX_HELMET_CLOSE_SND, true);
 				setState(S_WAIT_FOR_CLOSE_CLANG);
+				timer.start(1000);
 			}
 			break;
 
 		case S_WAIT_FOR_CLOSE_CLANG:
-			if (!isPoweredUp()) {
-				sfx.playFx(SFX_SUIT_POWER_UP_SND);
+			if (timer.expired()) {
+				if (firstTime) {
+					sfx.playFx(SFX_SUIT_POWER_UP_SND);
+					firstTime = false;
+				}
+				faceplateOpen = false;
+				setState(S_IDLE);
 			}
-			setState(S_IDLE);
 			break;
 
 		case S_SHUTDOWN:
@@ -171,26 +182,12 @@ FacePlate::State FacePlate::getState() {
 	return rv;
 }
 
-bool FacePlate::isPoweredUp() {
-	bool rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = poweredUp;
-	}
-	return rv;
-}
-
-void FacePlate::setPoweredUp(bool powered_up) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		poweredUp = powered_up;
-	}
-}
-
 void FacePlate::debounceButton() {
 	static unsigned long last_interrupt_time = 0;
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 200) {
-		if (poweredUp && (state == S_IDLE)) {
+		if (state == S_IDLE) {
 			state = S_FACEPLATE_REQUEST;
 		}
 	}

@@ -55,13 +55,13 @@ void Eyes::deactivate() {
 }
 
 void Eyes::startup() {
-	if (!poweredUp) {
+	if (state == S_OFF) {
 		state = S_STARTUP;
 	}
 }
 
 void Eyes::shutdown() {
-	if (poweredUp) {
+	if (state != S_OFF) {
 		state = S_SHUTDOWN;
 	}
 }
@@ -81,8 +81,9 @@ void Eyes::processState() {
 			
 		case S_EYE_DELAY:
 			if (timer.expired()) {
-				if (!poweredUp) {
+				if (firstTime) {
 					state = S_BLINK_EYES;
+					firstTime = false;
 				}
 				else {
 					state = S_FADE_ON;
@@ -127,7 +128,7 @@ void Eyes::processState() {
 					analogWrite(pin, 0);
 					if (systemShuttingDown) {
 						systemShuttingDown = false;
-						poweredUp = false;
+						firstTime = true;
 						state = S_OFF;
 					}
 					else {
@@ -140,7 +141,6 @@ void Eyes::processState() {
 		case S_BLINK_EYES:
 			blinkCnt = 0;
 			state = S_BLINK_ON;
-			poweredUp = true;
 			break;
 
 		case S_BLINK_ON:

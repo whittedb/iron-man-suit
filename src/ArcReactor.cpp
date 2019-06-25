@@ -23,8 +23,8 @@ void ArcReactor::processState() {
 			break;
 
 		case S_STARTUP:
-			poweredUp = true;
 			on();
+			firstTime = false;
 			state = S_IDLE;
 			break;
 
@@ -32,21 +32,23 @@ void ArcReactor::processState() {
 			break;
 		
 		case S_SHUTDOWN:
-			poweredUp = false;
 			off();
+			firstTime = true;
 			state = S_OFF;
 			break;
 	}
 }
 
 void ArcReactor::startup() {
-	poweredUp = true;
-	on();
+	if (state == S_OFF) {
+		state = S_STARTUP;
+	}
 }
 
 void ArcReactor::shutdown() {
-	poweredUp = false;
-	off();
+	if (state == S_IDLE) {
+		state = S_SHUTDOWN;
+	}
 }
 
 void ArcReactor::on() {

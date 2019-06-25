@@ -33,6 +33,6 @@ class ArcReactor {
 		};
 
         State state = S_OFF;
-        bool poweredUp = false;
+        bool firstTime = true;
         Adafruit_NeoPixel ring;
 };

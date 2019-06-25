@@ -17,20 +17,25 @@ class SoundPlayer {
 		~SoundPlayer();
 
 		void begin();
+		void startup();
+		void shutdown();
 		bool setVolume(uint8_t volume);
 		uint8_t getVolume() { return fxVolume; }
 		bool isFxPlaying();
-		void playFx(const char *track, bool interrupt = false, bool wait_for_start = false);
+		bool playFx(const char *track, bool interrupt = false);
 		void processState();
 
 	private:
 		enum State {
+			S_OFF,
 			S_IDLE,
+			S_STARTUP,
+			S_SHUTDOWN,
 			S_PLAYING,
 			S_PLAY_NEXT
 		};
 
-		State state = S_IDLE;
+		State state = S_OFF;
 		bool fxPlaying = false;
 		uint8_t activePin;
 		uint8_t rstPin;
@@ -39,7 +44,7 @@ class SoundPlayer {
 		Adafruit_Soundboard sfx;
 		Queue<const char *> fxQue;
 
-		void playTrackName(const char *track, bool wait_for_start = false);
+		bool playTrackName(const char *track);
 		void setFxPlaying(bool new_value);
 		void queSong(const char *track);
 		const char *dequeSong();

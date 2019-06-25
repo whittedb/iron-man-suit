@@ -51,9 +51,11 @@ void Suit::processState() {
             if (isPoweredUp()) {
                 facePlate.shutdown();
                 arcReactor.shutdown();
+				sfx.shutdown();
                 setState(S_OFF);
             }
             else {
+				sfx.startup();
                 arcReactor.startup();
                 facePlate.startup();
                 setState(S_IDLE);
@@ -65,7 +67,7 @@ void Suit::processState() {
 bool Suit::isPoweredUp() {
 	bool rv;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = poweredUp;
+		rv = state != S_OFF;
 	}
 	return rv;
 }

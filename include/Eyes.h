@@ -43,9 +43,9 @@ class Eyes {
 
 		uint8_t pin;
 		State state = S_IDLE;
+		bool firstTime = true;
 		long currentEyePWM;
 		MyTimer timer = MyTimer();
-		bool poweredUp = false;
 		bool systemShuttingDown = false;
 		uint8_t blinkCnt;
 };

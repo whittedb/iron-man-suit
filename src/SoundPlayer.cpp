@@ -43,6 +43,18 @@ void SoundPlayer::begin() {
 	}
 }
 
+void SoundPlayer::startup() {
+	if (state == S_OFF) {
+		state = S_STARTUP;
+	}
+}
+
+void SoundPlayer::shutdown() {
+	if (state != S_OFF) {
+		state = S_SHUTDOWN;
+	}
+}
+
 bool SoundPlayer::setVolume(uint8_t v) {
 	// cant be higher than 63 or lower than 0
 	if (v > 63) v = 63;
@@ -61,45 +73,60 @@ bool SoundPlayer::setVolume(uint8_t v) {
 }
 
 bool SoundPlayer::isFxPlaying() {
-	bool rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = fxPlaying;
-	}
-	return rv;
+	return fxPlaying;
 }
 
-void SoundPlayer::playFx(const char* track, bool interrupt, bool wait_for_start) {
+bool SoundPlayer::playFx(const char* track, bool interrupt) {
+	bool rv = false;
 	if (isFxPlaying()) {
 		if (interrupt) {
 			sfx.stop();
-			playTrackName(track, wait_for_start);
+			rv = playTrackName(track);
 		}
 		else {
 			queSong(track);
+			rv = true;
 		}
 	}
 	else {
-		playTrackName(track, wait_for_start);
+		rv = playTrackName(track);
 	}
+
+	return rv;
 }
 
-void SoundPlayer::playTrackName(const char* track, bool wait_for_start) {
+bool SoundPlayer::playTrackName(const char* track) {
 	bool success = sfx.playTrack((char*)track);
-	if (success) {
-		if (wait_for_start) {
-			while (!isFxPlaying()){}
-		}
-	}
-	else {
+	if (!success) {
 		DEBUG_PRINTLN2(F("Failed to play track: "), track);
 	}
+
+	return success;
 }
 
 void SoundPlayer::processState() {
 	checkFxActive();
 
 	switch (state) {
+		case S_OFF:
 		case S_IDLE:
+			break;
+
+		case S_STARTUP:
+			state = S_IDLE;
+			break;
+
+		case S_SHUTDOWN:
+			// Empty the queue and stop any playing
+			while (!fxQue.isEmpty()) {
+				fxQue.dequeue();
+			}
+			if (isFxPlaying()) {
+				sfx.stop();
+			}
+			state = S_OFF;
+			break;
+
 		case S_PLAYING:
 			break;
 
@@ -134,14 +161,16 @@ bool SoundPlayer::songQueEmpty() {
 
 void SoundPlayer::checkFxActive() {
 	// If playing state has changed then update the state variable
-	bool pin_state = digitalRead(activePin) == LOW;
-	if (pin_state != fxPlaying) {
-		fxPlaying = pin_state;
-		if (!fxPlaying) {
-			state = S_PLAY_NEXT;
-		}
-		else {
-			state = S_PLAYING;
+	if (!(state == S_OFF || state == S_SHUTDOWN || state == S_STARTUP)) {
+		bool pin_state = digitalRead(activePin) == LOW;
+		if (pin_state != fxPlaying) {
+			fxPlaying = pin_state;
+			if (!fxPlaying) {
+				state = S_PLAY_NEXT;
+			}
+			else {
+				state = S_PLAYING;
+			}
 		}
 	}
 }

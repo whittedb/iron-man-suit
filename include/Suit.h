@@ -30,7 +30,6 @@ class Suit {
         SoundPlayer sfx;
         FacePlate facePlate;
         ArcReactor arcReactor;
-        bool poweredUp = false;
         State state = S_OFF;
 		static Suit *instance;
 
