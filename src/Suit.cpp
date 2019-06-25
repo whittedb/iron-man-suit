@@ -48,7 +48,6 @@ void Suit::processState() {
             break;
 
 		case S_POWER_TOGGLE:
-			DEBUG_PRINTLN(F("Power Toogle"));
             if (isPoweredUp()) {
                 facePlate.shutdown();
                 arcReactor.shutdown();
