@@ -23,29 +23,26 @@ class SoundPlayer {
 		void playFx(const char *track, bool interrupt = false, bool wait_for_start = false);
 		void processState();
 
+	private:
 		enum State {
 			S_IDLE,
 			S_PLAYING,
 			S_PLAY_NEXT
 		};
 
-	private:
-		void playTrackName(const char *track, bool wait_for_start = false);
-		void setState(State new_state);
-		State getState();
-		void setFxPlaying(bool new_value);
-		void queSong(const char *track);
-		const char *dequeSong();
-		bool songQueEmpty();
-
-		static uint8_t activePin;
-		static volatile State state;
-		static volatile bool fxPlaying;
-		static void handleFxActive();
-
+		State state = S_IDLE;
+		bool fxPlaying = false;
+		uint8_t activePin;
 		uint8_t rstPin;
 		uint8_t fxVolume;		// We'll track the volume level in this variable.
 		SoftwareSerial ss;
 		Adafruit_Soundboard sfx;
 		Queue<const char *> fxQue;
+
+		void playTrackName(const char *track, bool wait_for_start = false);
+		void setFxPlaying(bool new_value);
+		void queSong(const char *track);
+		const char *dequeSong();
+		bool songQueEmpty();
+		void checkFxActive();
 };

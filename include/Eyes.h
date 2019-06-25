@@ -17,11 +17,15 @@ class Eyes {
 		void begin();
 		void activate();
 		void deactivate();
+		void startup();
+		void shutdown();
 		void processState();
 		bool isIdle() { return state == S_IDLE; }
 
 	private:
 		enum State {
+			S_OFF,
+			S_STARTUP,
 			S_IDLE,
 			S_BLINK_EYES,
 			S_BLINK_ON,
@@ -33,13 +37,15 @@ class Eyes {
 			S_FADE_OFF,
 			S_WAIT_FADE_OFF,
 			S_EYE_DELAY,
-			S_DEACTIVATE_EYES
+			S_DEACTIVATE_EYES,
+			S_SHUTDOWN
 		};
 
 		uint8_t pin;
 		State state = S_IDLE;
 		long currentEyePWM;
 		MyTimer timer = MyTimer();
-		bool systemStarted = false;
+		bool poweredUp = false;
+		bool systemShuttingDown = false;
 		uint8_t blinkCnt;
 };

@@ -2,12 +2,14 @@
 //
 //
 #pragma once
+#include "SoundPlayer.h"
 #include "FacePlate.h"
 #include "ArcReactor.h"
 
 class Suit {
     public:
         Suit(
+            uint8_t power_toggle_pin,
             uint8_t faceplate_activate_pin, uint8_t faceplate_servo_pin,
             uint8_t eye_pin,
             uint8_t arc_pin,
@@ -15,9 +17,25 @@ class Suit {
 
         void begin();
         void processState();
+        bool isPoweredUp();
 
     private:
+		enum State {
+			S_OFF,
+			S_IDLE,
+            S_POWER_TOGGLE
+		};
+
+        uint8_t powerTogglePin;
         SoundPlayer sfx;
         FacePlate facePlate;
         ArcReactor arcReactor;
+        bool poweredUp = false;
+        State state = S_OFF;
+		static Suit *instance;
+
+		void setState(State new_state);
+		State getState();
+		void debounceButton();
+		static void debounceButtonMarshaller() { instance->debounceButton(); }
 };

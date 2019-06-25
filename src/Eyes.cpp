@@ -54,14 +54,34 @@ void Eyes::deactivate() {
 	state = S_DEACTIVATE_EYES;
 }
 
+void Eyes::startup() {
+	if (!poweredUp) {
+		state = S_STARTUP;
+	}
+}
+
+void Eyes::shutdown() {
+	if (poweredUp) {
+		state = S_SHUTDOWN;
+	}
+}
+
 void Eyes::processState() {
 	switch (state) {
+		case S_OFF:
+			break;
+
 		case S_IDLE:
 			break;
 
+		case S_STARTUP:
+			DEBUG_PRINTLN(F("Starting eye system"));
+			state = S_IDLE;
+			break;
+			
 		case S_EYE_DELAY:
 			if (timer.expired()) {
-				if (!systemStarted) {
+				if (!poweredUp) {
 					state = S_BLINK_EYES;
 				}
 				else {
@@ -105,7 +125,14 @@ void Eyes::processState() {
 				else {
 					DEBUG_PRINTLN(F("Eye dim done...."));
 					analogWrite(pin, 0);
-					state = S_IDLE;
+					if (systemShuttingDown) {
+						systemShuttingDown = false;
+						poweredUp = false;
+						state = S_OFF;
+					}
+					else {
+						state = S_IDLE;
+					}
 				}
 			}
 			break;
@@ -113,7 +140,7 @@ void Eyes::processState() {
 		case S_BLINK_EYES:
 			blinkCnt = 0;
 			state = S_BLINK_ON;
-			systemStarted = true;
+			poweredUp = true;
 			break;
 
 		case S_BLINK_ON:
@@ -151,6 +178,12 @@ void Eyes::processState() {
 
 		case S_DEACTIVATE_EYES:
 			state = S_FADE_OFF;
+			break;
+
+		case S_SHUTDOWN:
+			DEBUG_PRINTLN(F("Shutting down eyes"));
+			systemShuttingDown = true;
+			state = S_DEACTIVATE_EYES;
 			break;
 	}
 }
