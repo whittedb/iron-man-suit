@@ -23,6 +23,7 @@ void ArcReactor::processState() {
 			break;
 
 		case S_STARTUP:
+			DEBUG_PRINTLN(F("Starting Arc Reactor"));
 			on();
 			firstTime = false;
 			state = S_IDLE;

@@ -45,6 +45,7 @@ void SoundPlayer::begin() {
 
 void SoundPlayer::startup() {
 	if (state == S_OFF) {
+		DEBUG_PRINTLN(F("Starting sound system"));
 		state = S_STARTUP;
 	}
 }
