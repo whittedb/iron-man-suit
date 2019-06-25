@@ -48,17 +48,20 @@ void Suit::processState() {
             break;
 
 		case S_POWER_TOGGLE:
+			DEBUG_PRINTLN(F("Power Toogle"));
             if (isPoweredUp()) {
                 facePlate.shutdown();
                 arcReactor.shutdown();
 				sfx.shutdown();
                 setState(S_OFF);
+				setPoweredUp(false);
             }
             else {
 				sfx.startup();
                 arcReactor.startup();
                 facePlate.startup();
                 setState(S_IDLE);
+				setPoweredUp(true);
             }
 			break;
     }
@@ -67,9 +70,15 @@ void Suit::processState() {
 bool Suit::isPoweredUp() {
 	bool rv;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state != S_OFF;
+		rv = poweredUp;
 	}
 	return rv;
+}
+
+void Suit::setPoweredUp(bool powered_up) {
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		poweredUp = powered_up;
+	}
 }
 
 void Suit::setState(State new_state) {

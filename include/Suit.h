@@ -31,9 +31,11 @@ class Suit {
         FacePlate facePlate;
         ArcReactor arcReactor;
         State state = S_OFF;
+        bool poweredUp = false;
 		static Suit *instance;
 
 		void setState(State new_state);
+        void setPoweredUp(bool powered_up);
 		State getState();
 		void debounceButton();
 		static void debounceButtonMarshaller() { instance->debounceButton(); }
