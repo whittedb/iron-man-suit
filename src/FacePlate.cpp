@@ -17,11 +17,12 @@ constexpr auto MAX_SRVO_PWM = 2068;
 constexpr auto SERVO_DELAY = 0;
 
 
-FacePlate::State FacePlate::state = FacePlate::State::S_IDLE;
+FacePlate *FacePlate::instance = NULL;
 
 
-FacePlate::FacePlate(uint8_t activate_pin, uint8_t servo_pin, uint8_t eye_pin, SoundPlayer &sfx)
-		: activatePin(activate_pin), servoPin(servo_pin), eyes(eye_pin), sfx(sfx) {
+FacePlate::FacePlate(Suit &suit, uint8_t activate_pin, uint8_t servo_pin, uint8_t eye_pin, SoundPlayer &sfx)
+		: suit(suit), activatePin(activate_pin), servoPin(servo_pin), eyes(eye_pin), sfx(sfx) {
+	instance = this;
 }
 
 FacePlate::~FacePlate() {
@@ -39,7 +40,7 @@ void FacePlate::begin() {
 	servo.attach(servoPin, MIN_SRVO_PWM, MAX_SRVO_PWM);
 	servo.write(FACE_POS_OPEN);
 
-	attachInterrupt(digitalPinToInterrupt(activatePin), debounceButton, FALLING);
+	attachInterrupt(digitalPinToInterrupt(activatePin), debounceButtonMarshaller, FALLING);
 }
 
 bool FacePlate::isIdle() {
@@ -47,38 +48,55 @@ bool FacePlate::isIdle() {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		rv = state == S_IDLE;
 	}
-	DEBUG_PRINT2(F("Faceplate state="), state);
 	return rv;
 }
 
 void FacePlate::open() {
-	if (!isIdle() || faceplateOpen) return;
-
-	setState(S_OPENING);
+	if (isIdle() && !faceplateOpen) {
+		setState(S_OPENING);
+	}
 }
 
 void FacePlate::close() {
-	if (!isIdle() || !faceplateOpen) return;
+	if (isIdle() && faceplateOpen) {
+		setState(S_CLOSING);
+	}
+}
 
-	setState(S_CLOSING);
+void FacePlate::startup() {
+	if (!isPoweredUp()) {
+		setState(S_STARTUP);
+	}
+}
+
+void FacePlate::shutdown() {
+	if (isPoweredUp()) {
+		setState(S_SHUTDOWN);
+	}
 }
 
 void FacePlate::processState() {
 	eyes.processState();
 
 	switch(getState()) {
+		case S_OFF:
+			break;
+
 		case S_IDLE:
+			break;
+
+		case S_STARTUP:
+			DEBUG_PRINTLN(F("Starting faceplate system"));
+			setState(S_OPENING);
 			break;
 
 		case S_FACEPLATE_REQUEST:
 			DEBUG_PRINTLN(F("Faceplate Request"));
-			if (isIdle()) {
-				if (isOpen()) {
-					setState(S_CLOSING);
-				}
-				else {
-					setState(S_OPENING);
-				}
+			if (isOpen()) {
+				setState(S_CLOSING);
+			}
+			else {
+				setState(S_OPENING);
 			}
 			break;
 
@@ -98,17 +116,25 @@ void FacePlate::processState() {
 
 		case S_WAIT_FOR_OPEN:
 			if(timer.expired()) {
-				eyes.deactivate();
 				DEBUG_PRINTLN(F("Helmet open..."));
+				if (shuttingDown) {
+					eyes.shutdown();
+					shuttingDown = false;
+					poweredUp = false;
+					setState(S_OFF);
+				}
+				else {
+					eyes.deactivate();
+					setState(S_IDLE);
+				}
 				faceplateOpen = true;
-				setState(S_IDLE);
 			}
 			break;
 
 		case S_WAIT_FOR_CLOSE:
 			if(timer.expired()) {
-				eyes.activate();
 				DEBUG_PRINTLN(F("Helmet closed..."));
+				eyes.activate();
 				sfx.playFx(SFX_HELMET_CLOSE_SND, true, true);
 				faceplateOpen = false;
 				setState(S_WAIT_FOR_CLOSE_CLANG);
@@ -118,22 +144,16 @@ void FacePlate::processState() {
 		case S_WAIT_FOR_CLOSE_CLANG:
 			if (!poweredUp) {
 				sfx.playFx(SFX_SUIT_POWER_UP_SND);
-				poweredUp = true;
 			}
 			setState(S_IDLE);
 			break;
 
+		case S_SHUTDOWN:
+			DEBUG_PRINTLN(F("Shutting down faceplate"));
+			shuttingDown = true;
+			setState(S_OPENING);
+			break;
 	}
-}
-
-void FacePlate::debounceButton() {
-	static unsigned long last_interrupt_time = 0;
-	unsigned long interrupt_time = millis();
-	// If interrupts come faster than 200ms, assume it's a bounce and ignore
-	if (interrupt_time - last_interrupt_time > 200) {
-		state = S_FACEPLATE_REQUEST;
-	}
-	last_interrupt_time = interrupt_time;
 }
 
 void FacePlate::setState(State new_state) {
@@ -148,4 +168,30 @@ FacePlate::State FacePlate::getState() {
 		rv = state;
 	}
 	return rv;
+}
+
+bool FacePlate::isPoweredUp() {
+	bool rv;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		rv = poweredUp;
+	}
+	return rv;
+}
+
+void FacePlate::setPoweredUp(bool powered_up) {
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		poweredUp = powered_up;
+	}
+}
+
+void FacePlate::debounceButton() {
+	static unsigned long last_interrupt_time = 0;
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 200) {
+		if (poweredUp && state == S_IDLE) {
+			state = S_FACEPLATE_REQUEST;
+		}
+	}
+	last_interrupt_time = interrupt_time;
 }

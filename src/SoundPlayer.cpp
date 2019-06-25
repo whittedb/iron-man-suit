@@ -17,15 +17,11 @@ constexpr auto DEFAULT_VOLUME = 25;
 constexpr auto FX_BOARD_SPEED = 9600;
 
 
-volatile SoundPlayer::State SoundPlayer::state = SoundPlayer::State::S_IDLE;
-volatile bool SoundPlayer::fxPlaying = false;
-uint8_t SoundPlayer::activePin;
-
-
 SoundPlayer::SoundPlayer(uint8_t tx_pin, uint8_t rx_pin, uint8_t active_pin, uint8_t rst_pin) :
-	rstPin(rst_pin), fxVolume(DEFAULT_VOLUME), ss(tx_pin, rx_pin), sfx(&ss, NULL, rst_pin) {
-
-	activePin = active_pin;
+	activePin(active_pin), rstPin(rst_pin),
+	fxVolume(DEFAULT_VOLUME),
+	ss(tx_pin, rx_pin),
+	sfx(&ss, NULL, rst_pin) {
 }
 
 SoundPlayer::~SoundPlayer() {}
@@ -44,8 +40,6 @@ void SoundPlayer::begin() {
 	}
 	else {
 		setVolume(fxVolume);
-
-		attachInterrupt(digitalPinToInterrupt(activePin), handleFxActive, CHANGE);
 	}
 }
 
@@ -102,7 +96,9 @@ void SoundPlayer::playTrackName(const char* track, bool wait_for_start) {
 }
 
 void SoundPlayer::processState() {
-	switch (getState()) {
+	checkFxActive();
+
+	switch (state) {
 		case S_IDLE:
 		case S_PLAYING:
 			break;
@@ -111,10 +107,10 @@ void SoundPlayer::processState() {
 			if (!isFxPlaying()) {
 				if (!songQueEmpty()) {
 					playTrackName(dequeSong());
-					setState(S_PLAYING);
+					state = S_PLAYING;
 				}
 				else {
-					setState(S_IDLE);
+					state = S_IDLE;
 				}
 			}
 			break;
@@ -124,54 +120,28 @@ void SoundPlayer::processState() {
 	}
 }
 
-void SoundPlayer::handleFxActive() {
-	fxPlaying = digitalRead(activePin) == LOW;
-	if (!fxPlaying) {
-		state = S_PLAY_NEXT;
-	}
-	else {
-		state = S_PLAYING;
-	}
-}
-
-void SoundPlayer::setState(State new_state) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		state = new_state;
-	}
-}
-
-SoundPlayer::State SoundPlayer::getState() {
-	State rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state;
-	}
-	return rv;
-}
-
-void SoundPlayer::setFxPlaying(bool new_value) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		fxPlaying = new_value;
-	}
-}
-
 void SoundPlayer:: queSong(const char *track) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		fxQue.enqueue(track);
-	}
+	fxQue.enqueue(track);
 }
 
 const char *SoundPlayer::dequeSong() {
-	const char *rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = fxQue.dequeue();
-	}
-	return rv;
+	return fxQue.dequeue();
 }
 
 bool SoundPlayer::songQueEmpty() {
-	bool rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = fxQue.isEmpty();
+	return fxQue.isEmpty();
+}
+
+void SoundPlayer::checkFxActive() {
+	// If playing state has changed then update the state variable
+	bool pin_state = digitalRead(activePin) == LOW;
+	if (pin_state != fxPlaying) {
+		fxPlaying = pin_state;
+		if (!fxPlaying) {
+			state = S_PLAY_NEXT;
+		}
+		else {
+			state = S_PLAYING;
+		}
 	}
-	return rv;
 }

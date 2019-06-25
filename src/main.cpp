@@ -16,18 +16,20 @@
 #include "debug.h"
 
 
+constexpr auto POWER_TOGGLE_PIN = 3;
 constexpr auto EYE_PIN = 6;
 constexpr auto SERVO_PIN = 5;
 constexpr auto FACEPLATE_ACTIVATE_PIN = 2;
 constexpr auto ARC_PIN = 4;
-constexpr auto SFX_PLAYING_PIN = 3;
+constexpr auto SFX_PLAYING_PIN = 7;
 constexpr auto SFX_TX_PIN = 10;
 constexpr auto SFX_RX_PIN = 11;
 #define SFX_RST_PIN A0
 
 
-Suit suit = Suit(FACEPLATE_ACTIVATE_PIN, SERVO_PIN, EYE_PIN,
-					ARC_PIN, SFX_TX_PIN, SFX_RX_PIN, SFX_PLAYING_PIN, SFX_RST_PIN);
+Suit suit = Suit(POWER_TOGGLE_PIN,
+					FACEPLATE_ACTIVATE_PIN, SERVO_PIN, EYE_PIN, ARC_PIN,
+					SFX_TX_PIN, SFX_RX_PIN, SFX_PLAYING_PIN, SFX_RST_PIN);
 
 
 void setup() {

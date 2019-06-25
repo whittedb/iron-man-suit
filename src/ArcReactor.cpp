@@ -18,7 +18,35 @@ void ArcReactor::begin() {
 }
 
 void ArcReactor::processState() {
-	
+	switch(state) {
+		case S_OFF:
+			break;
+
+		case S_STARTUP:
+			poweredUp = true;
+			on();
+			state = S_IDLE;
+			break;
+
+		case S_IDLE:
+			break;
+		
+		case S_SHUTDOWN:
+			poweredUp = false;
+			off();
+			state = S_OFF;
+			break;
+	}
+}
+
+void ArcReactor::startup() {
+	poweredUp = true;
+	on();
+}
+
+void ArcReactor::shutdown() {
+	poweredUp = false;
+	off();
 }
 
 void ArcReactor::on() {

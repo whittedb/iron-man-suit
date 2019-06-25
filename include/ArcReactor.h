@@ -19,9 +19,20 @@ class ArcReactor {
 
         void begin();
         void processState();
+        void startup();
+        void shutdown();
         void on();
         void off();
 
     private:
+		enum State {
+			S_OFF,
+			S_STARTUP,
+			S_IDLE,
+			S_SHUTDOWN
+		};
+
+        State state = S_OFF;
+        bool poweredUp = false;
         Adafruit_NeoPixel ring;
 };
