@@ -88,6 +88,7 @@ void FacePlate::processState() {
 		case S_STARTUP:
 			DEBUG_PRINTLN(F("Starting faceplate system"));
 			setState(S_OPENING);
+			setPoweredUp(true);
 			break;
 
 		case S_FACEPLATE_REQUEST:
@@ -120,7 +121,7 @@ void FacePlate::processState() {
 				if (shuttingDown) {
 					eyes.shutdown();
 					shuttingDown = false;
-					poweredUp = false;
+					setPoweredUp(false);
 					setState(S_OFF);
 				}
 				else {
@@ -142,7 +143,7 @@ void FacePlate::processState() {
 			break;
 
 		case S_WAIT_FOR_CLOSE_CLANG:
-			if (!poweredUp) {
+			if (!isPoweredUp()) {
 				sfx.playFx(SFX_SUIT_POWER_UP_SND);
 			}
 			setState(S_IDLE);
@@ -189,7 +190,7 @@ void FacePlate::debounceButton() {
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 200) {
-		if (poweredUp && state == S_IDLE) {
+		if (poweredUp && (state == S_IDLE)) {
 			state = S_FACEPLATE_REQUEST;
 		}
 	}

@@ -57,7 +57,7 @@ class FacePlate {
 		SoundPlayer &sfx;
 		Servo servo;
 		bool faceplateOpen = true;
-		bool poweredUp;
+		bool poweredUp = false;
 		bool shuttingDown = false;
 		MyTimer timer;
 		State state = S_OFF;
