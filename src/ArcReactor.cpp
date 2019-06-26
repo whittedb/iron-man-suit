@@ -8,7 +8,7 @@
 #include "debug.h"
 
 ArcReactor::ArcReactor(Suit &suit, uint8_t driver_pin) :
-	suit(suit), ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_RBGW) {
+	suit(suit), ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_RGBW) {
 
 }
 
