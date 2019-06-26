@@ -8,7 +8,7 @@
 #include "debug.h"
 
 ArcReactor::ArcReactor(Suit &suit, uint8_t driver_pin) :
-	suit(suit), ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_RGBW) {
+	suit(suit), ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_GRBW) {
 
 }
 
@@ -65,7 +65,7 @@ void ArcReactor::normalOn() {
 }
 
 void ArcReactor::attackOn() {
-	setRingColor(ring.Color(100, 0, 0, 0));
+	setRingColor(ring.Color(0, 100, 0, 0));
 	ring.show();
 }
 
@@ -75,7 +75,10 @@ void ArcReactor::off() {
 }
 
 void ArcReactor::setRingColor(uint32_t color) {
+	ring.fill(color, START_PIXEL, ARC_REACTOR_LED_COUNT);
+/*
 	for (int i = 0; i < ARC_REACTOR_LED_COUNT; ++i) {
 		ring.setPixelColor(i, color);
 	}
+ */
 }

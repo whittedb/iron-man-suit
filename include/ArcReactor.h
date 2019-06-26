@@ -10,6 +10,7 @@
 #include <Adafruit_Neopixel.h>
 
 
+constexpr auto START_PIXEL = 0;
 constexpr auto ARC_REACTOR_LED_COUNT = 12;
 
 class Suit;
