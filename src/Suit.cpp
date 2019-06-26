@@ -21,7 +21,7 @@ Suit::Suit(
         powerTogglePin(power_toggle_pin),
         sfx(sfx_tx_pin, sfx_rx_pin, sfx_playing_pin, sfx_rst_pin),
         facePlate(*this, faceplate_activate_pin, faceplate_servo_pin, eye_pin, sfx),
-        arcReactor(arc_pin) {
+        arcReactor(*this, arc_pin) {
     instance = this;
 }
 
@@ -92,6 +92,10 @@ Suit::State Suit::getState() {
 		rv = state;
 	}
 	return rv;
+}
+
+bool Suit::isInAttackMode() {
+	return attackMode;
 }
 
 void Suit::debounceButton() {

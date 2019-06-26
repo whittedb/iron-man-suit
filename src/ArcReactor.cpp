@@ -2,11 +2,13 @@
 //
 //
 
+#include "Suit.h"
 #include "ArcReactor.h"
 //#define MY_DEBUG
 #include "debug.h"
 
-ArcReactor::ArcReactor(uint8_t driver_pin) : ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_RBGW) {
+ArcReactor::ArcReactor(Suit &suit, uint8_t driver_pin) :
+	suit(suit), ring(ARC_REACTOR_LED_COUNT, driver_pin, NEO_RBGW) {
 
 }
 
@@ -24,7 +26,12 @@ void ArcReactor::processState() {
 
 		case S_STARTUP:
 			DEBUG_PRINTLN(F("Starting Arc Reactor"));
-			on();
+			if (suit.isInAttackMode()) {
+				attackOn();
+			}
+			else {
+				normalOn();
+			}
 			firstTime = false;
 			state = S_IDLE;
 			break;
@@ -52,20 +59,23 @@ void ArcReactor::shutdown() {
 	}
 }
 
-void ArcReactor::on() {
-	uint32_t color = ring.Color(0, 0, 0, 100);
+void ArcReactor::normalOn() {
+	setRingColor(ring.Color(0, 0, 0, 100));
+	ring.show();
+}
 
-	for (int i = 0; i < ARC_REACTOR_LED_COUNT; ++i) {
-		ring.setPixelColor(i, color);
-	}
+void ArcReactor::attackOn() {
+	setRingColor(ring.Color(100, 0, 0, 0));
 	ring.show();
 }
 
 void ArcReactor::off() {
-	uint32_t color = ring.Color(0, 0, 0, 0);
+	setRingColor(ring.Color(0, 0, 0, 0));
+	ring.show();
+}
 
+void ArcReactor::setRingColor(uint32_t color) {
 	for (int i = 0; i < ARC_REACTOR_LED_COUNT; ++i) {
 		ring.setPixelColor(i, color);
 	}
-	ring.show();
 }

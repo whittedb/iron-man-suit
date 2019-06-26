@@ -17,6 +17,7 @@ class Suit {
 
         void begin();
         void processState();
+        bool isInAttackMode();
         bool isPoweredUp();
 
     private:
@@ -32,6 +33,7 @@ class Suit {
         ArcReactor arcReactor;
         State state = S_OFF;
         bool poweredUp = false;
+        bool attackMode = true;
 		static Suit *instance;
 
 		void setState(State new_state);

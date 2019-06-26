@@ -12,16 +12,18 @@
 
 constexpr auto ARC_REACTOR_LED_COUNT = 12;
 
+class Suit;
 
 class ArcReactor {
     public:
-        ArcReactor(uint8_t driver_pin);
+        ArcReactor(Suit &suit, uint8_t driver_pin);
 
         void begin();
         void processState();
         void startup();
         void shutdown();
-        void on();
+        void normalOn();
+        void attackOn();
         void off();
 
     private:
@@ -32,7 +34,10 @@ class ArcReactor {
 			S_SHUTDOWN
 		};
 
+        Suit &suit;
         State state = S_OFF;
         bool firstTime = true;
         Adafruit_NeoPixel ring;
+
+        void setRingColor(uint32_t color);
 };
