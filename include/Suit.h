@@ -33,7 +33,7 @@ class Suit {
         ArcReactor arcReactor;
         State state = S_OFF;
         bool poweredUp = false;
-        bool attackMode = true;
+        bool attackMode = false;
 		static Suit *instance;
 
 		void setState(State new_state);
