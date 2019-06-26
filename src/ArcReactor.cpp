@@ -65,7 +65,7 @@ void ArcReactor::normalOn() {
 }
 
 void ArcReactor::attackOn() {
-	setRingColor(ring.Color(0, 100, 0, 0));
+	setRingColor(ring.Color(100, 0, 0, 0));
 	ring.show();
 }
 

@@ -11,7 +11,7 @@
 
 
 constexpr auto FACE_POS_CLOSED = 180;
-constexpr auto FACE_POS_OPEN = 5;
+constexpr auto FACE_POS_OPEN = 20;
 constexpr auto MIN_SRVO_PWM = 905;
 constexpr auto MAX_SRVO_PWM = 2068;
 constexpr auto SERVO_DELAY = 0;
