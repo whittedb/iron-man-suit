@@ -24,11 +24,15 @@ constexpr auto ARC_PIN = 4;
 constexpr auto SFX_PLAYING_PIN = 7;
 constexpr auto SFX_TX_PIN = 10;
 constexpr auto SFX_RX_PIN = 11;
+constexpr auto REPULSOR_LEFT_I2C_ADDRESS = 0x18;
+constexpr auto REPULSOR_RIGHT_I2C_ADDRESS = 0x19;
+
 #define SFX_RST_PIN A0
 
 
 Suit suit = Suit(POWER_TOGGLE_PIN,
 					FACEPLATE_ACTIVATE_PIN, SERVO_PIN, EYE_PIN, ARC_PIN,
+					REPULSOR_LEFT_I2C_ADDRESS, REPULSOR_RIGHT_I2C_ADDRESS,
 					SFX_TX_PIN, SFX_RX_PIN, SFX_PLAYING_PIN, SFX_RST_PIN);
 
 

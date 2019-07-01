@@ -10,14 +10,11 @@
 #include <Adafruit_Neopixel.h>
 
 
-constexpr auto START_PIXEL = 0;
-constexpr auto ARC_REACTOR_LED_COUNT = 12;
-
 class Suit;
 
 class ArcReactor {
     public:
-        ArcReactor(Suit &suit, uint8_t driver_pin);
+        ArcReactor(Suit &suit, uint8_t base_led, uint8_t led_count);
 
         void begin();
         void processState();
@@ -36,9 +33,10 @@ class ArcReactor {
 		};
 
         Suit &suit;
+        uint8_t baseLed;
+        uint8_t ledCnt;
         State state = S_OFF;
         bool firstTime = true;
-        Adafruit_NeoPixel ring;
 
         void setRingColor(uint32_t color);
 };
