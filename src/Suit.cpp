@@ -8,13 +8,13 @@
 //#define MY_DEBUG
 #include "debug.h"
 
-constexpr auto LED_RING_COUNT = 24;
+constexpr auto LED_RING_COUNT = 12;
 constexpr auto ARC_REACTOR_START_PIXEL = 0;
-constexpr auto ARC_REACTOR_LED_COUNT = 12;
-constexpr auto REPULSOR_LEFT_START_PIXEL = 12;
-constexpr auto REPULSOR_LEFT_LED_COUNT = 12;
-constexpr auto REPULSOR_RIGHT_START_PIXEL = 24;
-constexpr auto REPULSOR_RIGHT_LED_COUNT = 12;
+constexpr auto ARC_REACTOR_LED_COUNT = 4;
+constexpr auto REPULSOR_LEFT_START_PIXEL = 4;
+constexpr auto REPULSOR_LEFT_LED_COUNT = 4;
+constexpr auto REPULSOR_RIGHT_START_PIXEL = 8;
+constexpr auto REPULSOR_RIGHT_LED_COUNT = 4;
 
 
 Suit *Suit::instance = NULL;
