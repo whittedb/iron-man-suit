@@ -46,12 +46,14 @@ void ArcReactor::processState() {
 
 void ArcReactor::startup() {
 	if (state == S_OFF) {
+		DEBUG_PRINTLN(F("Starting Arc Reactor"));
 		state = S_STARTUP;
 	}
 }
 
 void ArcReactor::shutdown() {
 	if (state == S_IDLE) {
+		DEBUG_PRINTLN(F("Shutting down Arc Reactor"));
 		state = S_SHUTDOWN;
 	}
 }

@@ -37,8 +37,10 @@ void SoundPlayer::begin() {
 
 	if (!sfx.reset()) {
 		DEBUG_PRINTLN(F("No SFX board found!!!"));
+		return;
 	}
 	else {
+		initialized = true;
 		setVolume(fxVolume);
 	}
 }
@@ -51,6 +53,7 @@ void SoundPlayer::startup() {
 }
 
 void SoundPlayer::shutdown() {
+	DEBUG_PRINTLN(F("Shutting down sound system"));
 	if (state != S_OFF) {
 		state = S_SHUTDOWN;
 	}
@@ -81,7 +84,9 @@ bool SoundPlayer::playFx(const char* track, bool interrupt) {
 	bool rv = false;
 	if (isFxPlaying()) {
 		if (interrupt) {
-			sfx.stop();
+			if (initialized) {
+				sfx.stop();
+			}
 			rv = playTrackName(track);
 		}
 		else {
@@ -97,12 +102,18 @@ bool SoundPlayer::playFx(const char* track, bool interrupt) {
 }
 
 bool SoundPlayer::playTrackName(const char* track) {
-	bool success = sfx.playTrack((char*)track);
-	if (!success) {
-		DEBUG_PRINTLN2(F("Failed to play track: "), track);
-	}
+	if (initialized) {
+		bool success = sfx.playTrack((char*)track);
+		if (!success) {
+			DEBUG_PRINTLN2(F("Failed to play track: "), track);
+		}
 
-	return success;
+		return success;
+	} else
+	{
+		return false;
+	}
+	
 }
 
 void SoundPlayer::processState() {
@@ -123,7 +134,9 @@ void SoundPlayer::processState() {
 				fxQue.dequeue();
 			}
 			if (isFxPlaying()) {
-				sfx.stop();
+				if (initialized) {
+					sfx.stop();
+				}
 			}
 			state = S_OFF;
 			break;

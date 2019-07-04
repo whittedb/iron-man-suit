@@ -46,6 +46,7 @@ class Repulsor
         Adafruit_LIS3DH lis;
 
         State state = S_OFF;
+        bool initialized = false;
         MyTimer timer;
         uint32_t pixelColor;
 

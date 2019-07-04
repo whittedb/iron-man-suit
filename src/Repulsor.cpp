@@ -21,19 +21,25 @@ Repulsor::~Repulsor() {
 void Repulsor::begin() {
     if (!lis.begin(i2cAddress)) {
         DEBUG_PRINTLN(F("Failed to start accellerometer"));
+        return;
+    } else
+    {
+        initialized = true;
     }
+    
 
     lis.setRange(LIS3DH_RANGE_4_G);
 }
 
 void Repulsor::startup() {
+    DEBUG_PRINTLN(F("Starting repulsor"));
     pixelColor = 0;
     setColor(suit.getRing().Color(0, 0, 0, pixelColor));
+    state = S_IDLE;
 }
 
 void Repulsor::shutdown() {
-    pixelColor = 0;
-    setColor(suit.getRing().Color(0, 0, 0, pixelColor));
+    state = S_SHUTDOWN;
 }
 
 void Repulsor::processState() {
@@ -42,14 +48,16 @@ void Repulsor::processState() {
             break;
         
         case S_IDLE: {
-            sensors_event_t event;
-            lis.getEvent(&event);
-            DEBUG_PRINTLN2(F("Pitch: "), event.orientation.pitch);
-            DEBUG_PRINTLN2(F("Roll: "), event.orientation.roll);
-            DEBUG_PRINTLN2(F("Heading: "), event.orientation.heading);
-            DEBUG_PRINTLN(F(""));
-            if (event.orientation.pitch > 70.0) {
-                state = S_FIRE;
+            if (initialized) {
+                sensors_event_t event;
+                lis.getEvent(&event);
+                DEBUG_PRINTLN2(F("Pitch: "), event.orientation.pitch);
+                DEBUG_PRINTLN2(F("Roll: "), event.orientation.roll);
+                DEBUG_PRINTLN2(F("Heading: "), event.orientation.heading);
+                DEBUG_PRINTLN(F(""));
+                if (event.orientation.pitch > 70.0) {
+                    state = S_FIRE;
+                }
             }
             break;
         }
@@ -101,20 +109,23 @@ void Repulsor::processState() {
             break;
 
         case S_COOLDOWN: {
-            sensors_event_t event;
-            lis.getEvent(&event);
-            DEBUG_PRINTLN2(F("Pitch: "), event.orientation.pitch);
-            DEBUG_PRINTLN2(F("Roll: "), event.orientation.roll);
-            DEBUG_PRINTLN2(F("Heading: "), event.orientation.heading);
-            DEBUG_PRINTLN(F(""));
-            if (event.orientation.pitch < 0.0 && timer.expired()) {
-                suit.setAttackMode(false);
-                state = S_IDLE;
+            if (initialized) {
+                sensors_event_t event;
+                lis.getEvent(&event);
+                DEBUG_PRINTLN2(F("Pitch: "), event.orientation.pitch);
+                DEBUG_PRINTLN2(F("Roll: "), event.orientation.roll);
+                DEBUG_PRINTLN2(F("Heading: "), event.orientation.heading);
+                DEBUG_PRINTLN(F(""));
+                if (event.orientation.pitch < 0.0 && timer.expired()) {
+                    suit.setAttackMode(false);
+                    state = S_IDLE;
+                }
             }
             break;
         }
 
         case S_SHUTDOWN:
+            DEBUG_PRINTLN(F("Shutting down repulsor"));
             pixelColor = 0;
             setColor(suit.getRing().Color(0, 0, 0, pixelColor));
             state = S_OFF;

@@ -43,6 +43,7 @@ class SoundPlayer {
 		SoftwareSerial ss;
 		Adafruit_Soundboard sfx;
 		Queue<const char *> fxQue;
+		bool initialized = false;
 
 		bool playTrackName(const char *track);
 		void setFxPlaying(bool new_value);
