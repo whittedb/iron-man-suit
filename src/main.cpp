@@ -20,7 +20,7 @@ constexpr auto POWER_TOGGLE_PIN = 3;
 constexpr auto EYE_PIN = 6;
 constexpr auto SERVO_PIN = 5;
 constexpr auto FACEPLATE_ACTIVATE_PIN = 2;
-constexpr auto ARC_PIN = 4;
+constexpr auto LED_RING_PIN = 4;
 constexpr auto SFX_PLAYING_PIN = 7;
 constexpr auto SFX_TX_PIN = 10;
 constexpr auto SFX_RX_PIN = 11;
@@ -31,7 +31,7 @@ constexpr auto REPULSOR_RIGHT_I2C_ADDRESS = 0x19;
 
 
 Suit suit = Suit(POWER_TOGGLE_PIN,
-					FACEPLATE_ACTIVATE_PIN, SERVO_PIN, EYE_PIN, ARC_PIN,
+					FACEPLATE_ACTIVATE_PIN, SERVO_PIN, EYE_PIN, LED_RING_PIN,
 					REPULSOR_LEFT_I2C_ADDRESS, REPULSOR_RIGHT_I2C_ADDRESS,
 					SFX_TX_PIN, SFX_RX_PIN, SFX_PLAYING_PIN, SFX_RST_PIN);
 

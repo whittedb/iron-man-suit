@@ -16,6 +16,18 @@ void ArcReactor::begin() {
 	DEBUG_PRINTLN(F("Initializing Arc Reactor...."));
 }
 
+void ArcReactor::startup() {
+	if (state == S_OFF) {
+		state = S_STARTUP;
+	}
+}
+
+void ArcReactor::shutdown() {
+	if (state != S_IDLE) {
+		state = S_SHUTDOWN;
+	}
+}
+
 void ArcReactor::processState() {
 	switch(state) {
 		case S_OFF:
@@ -42,18 +54,6 @@ void ArcReactor::processState() {
 			firstTime = true;
 			state = S_OFF;
 			break;
-	}
-}
-
-void ArcReactor::startup() {
-	if (state == S_OFF) {
-		state = S_STARTUP;
-	}
-}
-
-void ArcReactor::shutdown() {
-	if (state == S_IDLE) {
-		state = S_SHUTDOWN;
 	}
 }
 

@@ -32,14 +32,18 @@ void Repulsor::begin() {
 }
 
 void Repulsor::startup() {
-    DEBUG_PRINTLN(F("Starting repulsor"));
-    pixelColor = 0;
-    setColor(suit.getRing().Color(0, 0, 0, pixelColor));
-    state = S_IDLE;
+    if (state != S_OFF) {
+        DEBUG_PRINTLN(F("Starting repulsor"));
+        pixelColor = 0;
+        setColor(suit.getRing().Color(0, 0, 0, pixelColor));
+        state = S_IDLE;
+    }
 }
 
 void Repulsor::shutdown() {
-    state = S_SHUTDOWN;
+    if (state != S_OFF) {
+        state = S_SHUTDOWN;
+    }
 }
 
 void Repulsor::processState() {

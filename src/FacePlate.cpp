@@ -43,12 +43,20 @@ void FacePlate::begin() {
 	attachInterrupt(digitalPinToInterrupt(activatePin), debounceButtonMarshaller, FALLING);
 }
 
-bool FacePlate::isIdle() {
-	bool rv;
+void FacePlate::startup() {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state == S_IDLE;
+		if (state == S_OFF) {
+			setState(S_STARTUP);
+		}
 	}
-	return rv;
+}
+
+void FacePlate::shutdown() {
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (state != S_OFF) {
+			setState(S_SHUTDOWN);
+		}
+	}
 }
 
 void FacePlate::open() {
@@ -67,20 +75,12 @@ void FacePlate::close() {
 	}
 }
 
-void FacePlate::startup() {
+bool FacePlate::isIdle() {
+	bool rv;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state == S_OFF) {
-			setState(S_STARTUP);
-		}
+		rv = state == S_IDLE;
 	}
-}
-
-void FacePlate::shutdown() {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state != S_OFF) {
-			setState(S_SHUTDOWN);
-		}
-	}
+	return rv;
 }
 
 void FacePlate::processState() {
