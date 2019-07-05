@@ -53,8 +53,8 @@ void SoundPlayer::startup() {
 }
 
 void SoundPlayer::shutdown() {
-	DEBUG_PRINTLN(F("Shutting down sound system"));
 	if (state != S_OFF) {
+		DEBUG_PRINTLN(F("Shutting down sound system"));
 		state = S_SHUTDOWN;
 	}
 }
