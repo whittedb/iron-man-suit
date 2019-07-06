@@ -7,7 +7,7 @@
 	#include "WProgram.h"
 #endif
 
-#include <Servo.h>
+#include <Adafruit_TiCoServo.h>
 #include "MyTimer.h"
 #include "SoundPlayer.h"
 #include "Eyes.h"
@@ -53,7 +53,7 @@ class FacePlate {
 		uint8_t servoPin;
 		Eyes eyes;
 		SoundPlayer &sfx;
-		Servo servo;
+		Adafruit_TiCoServo servo;
 		bool faceplateOpen = true;
 		bool firstTime = true;
 		bool shuttingDown = false;

@@ -18,7 +18,7 @@
 
 constexpr auto POWER_TOGGLE_PIN = 3;
 constexpr auto EYE_PIN = 6;
-constexpr auto SERVO_PIN = 5;
+constexpr auto SERVO_PIN = 9;
 constexpr auto FACEPLATE_ACTIVATE_PIN = 2;
 constexpr auto LED_RING_PIN = 4;
 constexpr auto SFX_PLAYING_PIN = 7;
