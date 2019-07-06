@@ -13,7 +13,7 @@ ArcReactor::ArcReactor(Suit &a_suit, uint8_t base_led, uint8_t led_cnt) :
 }
 
 void ArcReactor::begin() {
-	DEBUG_PRINTLN(F("Initializing Arc Reactor...."));
+	DEBUG_PRINTLN(F("Initializing Arc Reactor"));
 }
 
 void ArcReactor::startup() {
@@ -23,7 +23,7 @@ void ArcReactor::startup() {
 }
 
 void ArcReactor::shutdown() {
-	if (state != S_IDLE) {
+	if (state != S_OFF) {
 		state = S_SHUTDOWN;
 	}
 }
@@ -58,12 +58,12 @@ void ArcReactor::processState() {
 }
 
 void ArcReactor::normalOn() {
-	setRingColor(suit.getRing().Color(0, 0, 0, 100));
+	setRingColor(suit.getRing().Color(0, 0, 0, 200));
     suit.getRing().show();
 }
 
 void ArcReactor::attackOn() {
-    setRingColor(suit.getRing().Color(100, 0, 0, 0));
+    setRingColor(suit.getRing().Color(200, 0, 0, 0));
     suit.getRing().show();
 }
 
@@ -73,6 +73,10 @@ void ArcReactor::off() {
 }
 
 void ArcReactor::setRingColor(uint32_t color) {
+	Serial.print(F("Color: "));
+	Serial.println(color, HEX);
+	DEBUG_PRINTLN2(F("Base: "), baseLed);
+	DEBUG_PRINTLN2(F("Cnt: "), ledCnt);
     suit.getRing().fill(color, baseLed, ledCnt);
     /*
 	for (int i = 0; i < ARC_REACTOR_LED_COUNT; ++i) {

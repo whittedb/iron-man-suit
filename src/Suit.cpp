@@ -39,17 +39,18 @@ Suit::Suit(
 
 void Suit::begin() {
 	DEBUG_PRINTLN(F("Initializing suit...."));
+	pinMode(powerTogglePin, INPUT_PULLUP);
+
     ring.begin();            // INITIALIZE NeoPixel strip object (REQUIRED)
     ring.show();             // Turn OFF all pixels ASAP
-    ring.setBrightness(200); // Set BRIGHTNESS to about 1/5 (max = 255)
+    ring.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+	delay(10);
     
 	sfx.begin();
     facePlate.begin();
 	arcReactor.begin();
 	repulsorLeft.begin();
 	repulsorRight.begin();
-	
-	pinMode(powerTogglePin, INPUT_PULLUP);
 
 	attachInterrupt(digitalPinToInterrupt(powerTogglePin), debounceButtonMarshaller, FALLING);
 }
@@ -71,18 +72,22 @@ void Suit::processState() {
 		case S_POWER_TOGGLE:
             if (isPoweredUp()) {
                 facePlate.shutdown();
-                arcReactor.shutdown();
-				repulsorRight.shutdown();
-				repulsorLeft.shutdown();
+                //arcReactor.shutdown();
+				//repulsorRight.shutdown();
+				//repulsorLeft.shutdown();
 				sfx.shutdown();
+				ring.fill(ring.Color(0,0,0));
+				ring.show();
                 setState(S_OFF);
 				setPoweredUp(false);
             }
             else {
 				sfx.startup();
-                arcReactor.startup();
-				repulsorRight.startup();
-				repulsorLeft.startup();
+                //arcReactor.startup();
+				ring.setPixelColor(4, ring.Color(0,255,0, 0));
+				ring.show();
+				//repulsorRight.startup();
+				//repulsorLeft.startup();
                 facePlate.startup();
                 setState(S_IDLE);
 				setPoweredUp(true);

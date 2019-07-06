@@ -16,3 +16,5 @@
 #define DEBUG_PRINT2(x,y) Serial.print(x); Serial.print(y)
 #define DEBUG_PRINTLN2(x,y) Serial.print(x); Serial.println(y)
 #endif
+
+int freeMemory();

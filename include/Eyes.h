@@ -42,7 +42,7 @@ class Eyes {
 		};
 
 		uint8_t pin;
-		State state = S_IDLE;
+		State state = S_OFF;
 		bool firstTime = true;
 		long currentEyePWM;
 		MyTimer timer = MyTimer();

@@ -10,8 +10,8 @@
 #include "debug.h"
 
 
-constexpr auto FACE_POS_CLOSED = 180;
-constexpr auto FACE_POS_OPEN = 20;
+constexpr auto FACE_POS_CLOSED = 170;
+constexpr auto FACE_POS_OPEN = 70;
 constexpr auto MIN_SRVO_PWM = 905;
 constexpr auto MAX_SRVO_PWM = 2068;
 constexpr auto SERVO_DELAY = 0;
@@ -96,6 +96,7 @@ void FacePlate::processState() {
 		case S_STARTUP:
 			DEBUG_PRINTLN(F("Starting faceplate system"));
 			setState(S_OPENING);
+			eyes.startup();
 			break;
 
 		case S_FACEPLATE_REQUEST:

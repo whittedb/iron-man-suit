@@ -40,6 +40,7 @@ void setup() {
 	DEBUG_BEGIN;
 	DEBUG_PRINTLN(F("Starting system...."));
 	suit.begin();
+	DEBUG_PRINTLN2(F("FreeMem: "), freeMemory());
 }
 
 void loop() {
