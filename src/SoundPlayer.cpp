@@ -27,7 +27,7 @@ SoundPlayer::SoundPlayer(uint8_t tx_pin, uint8_t rx_pin, uint8_t active_pin, uin
 SoundPlayer::~SoundPlayer() {}
 
 void SoundPlayer::begin() {
-	DEBUG_PRINTLN(F("Initializing sound system...."));
+	DEBUG_PRINTLN(F("Initializing sound system"));
 	ss.begin(FX_BOARD_SPEED);
 	Wire.begin();
 

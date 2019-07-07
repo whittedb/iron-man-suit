@@ -19,6 +19,7 @@ Repulsor::~Repulsor() {
 }
 
 void Repulsor::begin() {
+	DEBUG_PRINTLN(F("Initializing repulsor"));
     if (!lis.begin(i2cAddress)) {
         DEBUG_PRINTLN(F("Failed to start accellerometer"));
         return;

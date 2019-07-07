@@ -28,7 +28,7 @@ Suit::Suit(
 	uint8_t repulsor_right_i2c_address,
 	uint8_t sfx_tx_pin, uint8_t sfx_rx_pin, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin) :
 		powerTogglePin(power_toggle_pin),
-		ring(LED_RING_COUNT, led_ring_pin, NEO_GRBW),
+		ring(LED_RING_COUNT, led_ring_pin, NEO_GRBW+NEO_KHZ800),
 		sfx(sfx_tx_pin, sfx_rx_pin, sfx_playing_pin, sfx_rst_pin),
 		facePlate(*this, faceplate_activate_pin, faceplate_servo_pin, eye_pin, sfx),
 		arcReactor(*this, ARC_REACTOR_START_PIXEL, ARC_REACTOR_LED_COUNT),
@@ -38,13 +38,12 @@ Suit::Suit(
 }
 
 void Suit::begin() {
-	DEBUG_PRINTLN(F("Initializing suit...."));
+	DEBUG_PRINTLN(F("Initializing suit"));
 	pinMode(powerTogglePin, INPUT_PULLUP);
 
     ring.begin();            // INITIALIZE NeoPixel strip object (REQUIRED)
     ring.show();             // Turn OFF all pixels ASAP
     ring.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
-	delay(10);
     
 	sfx.begin();
     facePlate.begin();

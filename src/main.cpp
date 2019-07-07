@@ -38,7 +38,7 @@ Suit suit = Suit(POWER_TOGGLE_PIN,
 
 void setup() {
 	DEBUG_BEGIN;
-	DEBUG_PRINTLN(F("Starting system...."));
+	DEBUG_PRINTLN(F("Starting system"));
 	suit.begin();
 	DEBUG_PRINTLN2(F("FreeMem: "), freeMemory());
 }

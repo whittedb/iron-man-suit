@@ -110,14 +110,14 @@ void FacePlate::processState() {
 			break;
 
 		case S_OPENING:
-			DEBUG_PRINTLN(F("Opening helmet..."));
+			DEBUG_PRINTLN(F("Opening helmet"));
 			setState(S_WAIT_FOR_OPEN);
 			servo.write(FACE_POS_OPEN);
 			timer.start(SERVO_DELAY);
 			break;
 
 		case S_CLOSING:
-			DEBUG_PRINTLN(F("Closing helmet..."));
+			DEBUG_PRINTLN(F("Closing helmet"));
 			setState(S_WAIT_FOR_CLOSE);
 			servo.write(FACE_POS_CLOSED);
 			timer.start(SERVO_DELAY);
@@ -125,7 +125,7 @@ void FacePlate::processState() {
 
 		case S_WAIT_FOR_OPEN:
 			if(timer.expired()) {
-				DEBUG_PRINTLN(F("Helmet open..."));
+				DEBUG_PRINTLN(F("Helmet open"));
 				if (shuttingDown) {
 					eyes.shutdown();
 					shuttingDown = false;
@@ -142,7 +142,7 @@ void FacePlate::processState() {
 
 		case S_WAIT_FOR_CLOSE:
 			if(timer.expired()) {
-				DEBUG_PRINTLN(F("Helmet closed..."));
+				DEBUG_PRINTLN(F("Helmet closed"));
 				eyes.activate();
 				sfx.playFx(SFX_HELMET_CLOSE_SND, true);
 				setState(S_WAIT_FOR_CLOSE_CLANG);
