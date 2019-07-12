@@ -73,10 +73,6 @@ void ArcReactor::off() {
 }
 
 void ArcReactor::setRingColor(uint32_t color) {
-	Serial.print(F("Color: "));
-	Serial.println(color, HEX);
-	DEBUG_PRINTLN2(F("Base: "), baseLed);
-	DEBUG_PRINTLN2(F("Cnt: "), ledCnt);
     suit.getRing().fill(color, baseLed, ledCnt);
     /*
 	for (int i = 0; i < ARC_REACTOR_LED_COUNT; ++i) {

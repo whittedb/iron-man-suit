@@ -3,12 +3,7 @@
 //
 #pragma once
 
-#if defined(ARDUINO) && ARDUINO >= 100
-    #include "arduino.h"
-#else
-    #include "WProgram.h"
-#endif
-
+#include <Uart.h>
 #include "ArcReactor.h"
 #include "FacePlate.h"
 #include "SoundPlayer.h"
@@ -24,7 +19,7 @@ class Suit {
             uint8_t led_ring_pin,
             uint8_t repulsor_left_i2c_address,
             uint8_t repulsor_right_i2c_address,
-            uint8_t sfx_tx_pin, uint8_t sfx_rx_pin, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin);
+            Uart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin);
 
         void begin();
         void processState();

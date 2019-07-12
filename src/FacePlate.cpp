@@ -1,8 +1,7 @@
 // 
 // 
 //
-#include <util/atomic.h>
-#include <avr/pgmspace.h>
+#include "Atomic.h"
 #include "FacePlate.h"
 #include "Sounds.h"
 // Turn on serial output debug statements for this file only
@@ -44,43 +43,36 @@ void FacePlate::begin() {
 }
 
 void FacePlate::startup() {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state == S_OFF) {
-			setState(S_STARTUP);
-		}
+	Atomic a;
+	if (state == S_OFF) {
+		setState(S_STARTUP);
 	}
 }
 
 void FacePlate::shutdown() {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state != S_OFF) {
-			setState(S_SHUTDOWN);
-		}
+	Atomic a;
+	if (state != S_OFF) {
+		setState(S_SHUTDOWN);
 	}
 }
 
 void FacePlate::open() {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state == S_IDLE && !faceplateOpen) {
-			setState(S_OPENING);
-		}
+	Atomic a;
+	if (state == S_IDLE && !faceplateOpen) {
+		setState(S_OPENING);
 	}
 }
 
 void FacePlate::close() {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		if (state == S_IDLE && faceplateOpen) {
-			setState(S_CLOSING);
-		}
+	Atomic a;
+	if (state == S_IDLE && faceplateOpen) {
+		setState(S_CLOSING);
 	}
 }
 
 bool FacePlate::isIdle() {
-	bool rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state == S_IDLE;
-	}
-	return rv;
+	Atomic a;
+	return state == S_IDLE;
 }
 
 void FacePlate::processState() {
@@ -170,17 +162,13 @@ void FacePlate::processState() {
 }
 
 void FacePlate::setState(State new_state) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		state = new_state;
-	}
+	Atomic a;
+	state = new_state;
 }
 
 FacePlate::State FacePlate::getState() {
-	State rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state;
-	}
-	return rv;
+	Atomic a;
+	return state;
 }
 
 void FacePlate::debounceButton() {

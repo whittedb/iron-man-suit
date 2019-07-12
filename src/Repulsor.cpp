@@ -29,7 +29,7 @@ void Repulsor::begin() {
     }
     
 
-    lis.setRange(LIS3DH_RANGE_4_G);
+//    lis.setRange(LIS3DH_RANGE_4_G);
 }
 
 void Repulsor::startup() {

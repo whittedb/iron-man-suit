@@ -1,11 +1,5 @@
 #pragma once
 
-#if defined(ARDUINO) && ARDUINO >= 100
-    #include "arduino.h"
-#else
-    #include "WProgram.h"
-#endif
-
 #include "MyTimer.h"
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Neopixel.h>

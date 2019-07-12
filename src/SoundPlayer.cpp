@@ -4,7 +4,6 @@
 
 #include <Wire.h>
 #include <Adafruit_Soundboard.h>
-#include <util/atomic.h>
 #include <avr/pgmspace.h>
 #include "SoundPlayer.h"
 //#define MY_DEBUG
@@ -17,18 +16,18 @@ constexpr auto DEFAULT_VOLUME = 25;
 constexpr auto FX_BOARD_SPEED = 9600;
 
 
-SoundPlayer::SoundPlayer(uint8_t tx_pin, uint8_t rx_pin, uint8_t active_pin, uint8_t rst_pin) :
+SoundPlayer::SoundPlayer(Uart &serial, uint8_t active_pin, uint8_t rst_pin) :
 	activePin(active_pin), rstPin(rst_pin),
 	fxVolume(DEFAULT_VOLUME),
-	ss(tx_pin, rx_pin),
-	sfx(&ss, NULL, rst_pin) {
+	serial(serial),
+	sfx(&serial, NULL, rst_pin) {
 }
 
 SoundPlayer::~SoundPlayer() {}
 
 void SoundPlayer::begin() {
 	DEBUG_PRINTLN(F("Initializing sound system"));
-	ss.begin(FX_BOARD_SPEED);
+	serial.begin(FX_BOARD_SPEED);
 	Wire.begin();
 
 	pinMode(rstPin, INPUT);

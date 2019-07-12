@@ -1,19 +1,12 @@
 // SoundPlayer.h
 #pragma once
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
-
-#include <SoftwareSerial.h>
 #include <Adafruit_Soundboard.h>
 #include <Queue.h>
 
 class SoundPlayer {
 	public:
-		SoundPlayer(uint8_t tx_pin, uint8_t rx_pin, uint8_t active_pin, uint8_t rst_pin);
+		SoundPlayer(Uart &serial, uint8_t active_pin, uint8_t rst_pin);
 		~SoundPlayer();
 
 		void begin();
@@ -40,7 +33,7 @@ class SoundPlayer {
 		uint8_t activePin;
 		uint8_t rstPin;
 		uint8_t fxVolume;		// We'll track the volume level in this variable.
-		SoftwareSerial ss;
+		Uart &serial;
 		Adafruit_Soundboard sfx;
 		Queue<const char *> fxQue;
 		bool initialized = false;

@@ -2,9 +2,8 @@
 //
 //
 
-#include <util/atomic.h>
-#include <avr/pgmspace.h>
 #include "Suit.h"
+#include "Atomic.h"
 //#define MY_DEBUG
 #include "debug.h"
 
@@ -26,10 +25,10 @@ Suit::Suit(
     uint8_t led_ring_pin,
 	uint8_t repulsor_left_i2c_address,
 	uint8_t repulsor_right_i2c_address,
-	uint8_t sfx_tx_pin, uint8_t sfx_rx_pin, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin) :
+	Uart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin) :
 		powerTogglePin(power_toggle_pin),
 		ring(LED_RING_COUNT, led_ring_pin, NEO_GRBW+NEO_KHZ800),
-		sfx(sfx_tx_pin, sfx_rx_pin, sfx_playing_pin, sfx_rst_pin),
+		sfx(sfx_serial, sfx_playing_pin, sfx_rst_pin),
 		facePlate(*this, faceplate_activate_pin, faceplate_servo_pin, eye_pin, sfx),
 		arcReactor(*this, ARC_REACTOR_START_PIXEL, ARC_REACTOR_LED_COUNT),
 		repulsorLeft(*this, REPULSOR_LEFT_START_PIXEL, REPULSOR_LEFT_LED_COUNT, repulsor_left_i2c_address),
@@ -119,31 +118,23 @@ void Suit::setAttackMode(bool attack_mode) {
 }
 
 bool Suit::isPoweredUp() {
-	bool rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = poweredUp;
-	}
-	return rv;
+	Atomic a;
+	return poweredUp;
 }
 
 void Suit::setPoweredUp(bool powered_up) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		poweredUp = powered_up;
-	}
+	Atomic a;
+	poweredUp = powered_up;
 }
 
 void Suit::setState(State new_state) {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		state = new_state;
-	}
+	Atomic a;
+	state = new_state;
 }
 
 Suit::State Suit::getState() {
-	State rv;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		rv = state;
-	}
-	return rv;
+	Atomic a;
+	return state;
 }
 
 bool Suit::isInAttackMode() {

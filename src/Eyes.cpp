@@ -2,7 +2,7 @@
 // 
 // 
 
-#include <avr/pgmspace.h>
+#include <Arduino.h>
 #include "Eyes.h"
 //#define MY_DEBUG
 #include "debug.h"

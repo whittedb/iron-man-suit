@@ -1,13 +1,8 @@
 // FacePlate.h
 #pragma once
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
-
-#include <Adafruit_TiCoServo.h>
+#include <Servo.h>
+//#include <Adafruit_TiCoServo.h>
 #include "MyTimer.h"
 #include "SoundPlayer.h"
 #include "Eyes.h"
@@ -53,7 +48,8 @@ class FacePlate {
 		uint8_t servoPin;
 		Eyes eyes;
 		SoundPlayer &sfx;
-		Adafruit_TiCoServo servo;
+//		Adafruit_TiCoServo servo;
+		Servo servo;
 		bool faceplateOpen = true;
 		bool firstTime = true;
 		bool shuttingDown = false;
