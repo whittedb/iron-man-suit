@@ -10,11 +10,11 @@
 #define DEBUG_PRINTLN2(x,y)
 
 #else
-#define DEBUG_BEGIN SerialUSB.begin(DEBUG_SERIAL_SPEED)
-#define DEBUG_PRINT(x) SerialUSB.print(x)
-#define DEBUG_PRINTLN(x) SerialUSB.println(x)
-#define DEBUG_PRINT2(x,y) SerialUSB.print(x); Serial.print(y)
-#define DEBUG_PRINTLN2(x,y) SerialUSB.print(x); Serial.println(y)
+#define DEBUG_BEGIN Serial.begin(DEBUG_SERIAL_SPEED)
+#define DEBUG_PRINT(x) Serial.print(x)
+#define DEBUG_PRINTLN(x) Serial.println(x)
+#define DEBUG_PRINT2(x,y) Serial.print(x); Serial.print(y)
+#define DEBUG_PRINTLN2(x,y) Serial.print(x); Serial.println(y)
 #endif
 
 int freeMemory();
