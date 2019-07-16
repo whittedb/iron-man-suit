@@ -70,7 +70,7 @@ void Suit::processState() {
 		case S_POWER_TOGGLE:
             if (isPoweredUp()) {
                 facePlate.shutdown();
-                //arcReactor.shutdown();
+                arcReactor.shutdown();
 				//repulsorRight.shutdown();
 				//repulsorLeft.shutdown();
 				sfx.shutdown();
@@ -81,9 +81,9 @@ void Suit::processState() {
             }
             else {
 				sfx.startup();
-                //arcReactor.startup();
-				ring.setPixelColor(4, ring.Color(0,255,0, 0));
-				ring.show();
+                arcReactor.startup();
+//				ring.setPixelColor(4, ring.Color(0,255,0, 0));
+//				ring.show();
 				//repulsorRight.startup();
 				//repulsorLeft.startup();
                 facePlate.startup();
