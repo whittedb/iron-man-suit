@@ -37,7 +37,7 @@ Suit::Suit(
 }
 
 void Suit::begin() {
-	DEBUG_PRINTLN(F("Initializing suit"));
+	DEBUG_PRINTLN("Initializing suit");
 	pinMode(powerTogglePin, INPUT_PULLUP);
 
     ring.begin();            // INITIALIZE NeoPixel strip object (REQUIRED)

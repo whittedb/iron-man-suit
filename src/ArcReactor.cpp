@@ -13,7 +13,7 @@ ArcReactor::ArcReactor(Suit &a_suit, uint8_t base_led, uint8_t led_cnt) :
 }
 
 void ArcReactor::begin() {
-	DEBUG_PRINTLN(F("Initializing Arc Reactor"));
+	DEBUG_PRINTLN("Initializing Arc Reactor");
 }
 
 void ArcReactor::startup() {
@@ -34,7 +34,7 @@ void ArcReactor::processState() {
 			break;
 
 		case S_STARTUP:
-			DEBUG_PRINTLN(F("Starting Arc Reactor"));
+			DEBUG_PRINTLN("Starting Arc Reactor");
 			if (suit.isInAttackMode()) {
 				attackOn();
 			}
@@ -49,7 +49,7 @@ void ArcReactor::processState() {
 			break;
 		
 		case S_SHUTDOWN:
-			DEBUG_PRINTLN(F("Shutting down Arc Reactor"));
+			DEBUG_PRINTLN("Shutting down Arc Reactor");
 			off();
 			firstTime = true;
 			state = S_OFF;

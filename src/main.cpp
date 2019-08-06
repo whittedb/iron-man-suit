@@ -55,9 +55,10 @@ Suit suit = Suit(POWER_TOGGLE_PIN,
 
 void setup() {
 	DEBUG_BEGIN;
-	DEBUG_PRINTLN(F("Starting system"));
+	DEBUG_WAIT_FOR_INIT;
+	DEBUG_PRINTLN("Starting system");
 	suit.begin();
-	DEBUG_PRINTLN2(F("FreeMem: "), freeMemory());
+	DEBUG_PRINTF("FreeMem: %u\r\n", freeMemory());
 }
 
 void loop() {

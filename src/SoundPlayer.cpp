@@ -24,12 +24,13 @@ SoundPlayer::SoundPlayer(SfxUart &serial, uint8_t active_pin, uint8_t rst_pin) :
 SoundPlayer::~SoundPlayer() {}
 
 void SoundPlayer::begin() {
-	DEBUG_PRINTLN(F("Initializing sound system"));
+	DEBUG_PRINTLN("Initializing sound system");
+	pinMode(activePin, INPUT);
 	serial.begin(FX_BOARD_SPEED);
 	Wire.begin();
 
 	if (!sfx.reset()) {
-		DEBUG_PRINTLN(F("No SFX board found!!!"));
+		DEBUG_PRINTLN("No SFX board found!!!");
 		return;
 	}
 	else {
@@ -40,14 +41,14 @@ void SoundPlayer::begin() {
 
 void SoundPlayer::startup() {
 	if (state == S_OFF) {
-		DEBUG_PRINTLN(F("Starting sound system"));
+		DEBUG_PRINTLN("Starting sound system");
 		state = S_STARTUP;
 	}
 }
 
 void SoundPlayer::shutdown() {
 	if (state != S_OFF) {
-		DEBUG_PRINTLN(F("Shutting down sound system"));
+		DEBUG_PRINTLN("Shutting down sound system");
 		state = S_SHUTDOWN;
 	}
 }
@@ -57,7 +58,7 @@ bool SoundPlayer::setVolume(uint8_t v) {
 	if (v > 63) v = 63;
 	if (v < 0) v = 0;
 
-	DEBUG_PRINTLN2(F("Vol: "), v);
+	DEBUG_PRINTF("Vol: %d\r\n", v);
 
 	Wire.beginTransmission(MAX9744_I2CADDR);
 	Wire.write(v);
@@ -98,7 +99,7 @@ bool SoundPlayer::playTrackName(const char* track) {
 	if (initialized) {
 		bool success = sfx.playTrack((char*)track);
 		if (!success) {
-			DEBUG_PRINTLN2(F("Failed to play track: "), track);
+			DEBUG_PRINTF("Failed to play track: %d\r\n", track);
 		}
 
 		return success;

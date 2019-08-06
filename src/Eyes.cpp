@@ -41,7 +41,7 @@ Eyes::Eyes(uint8_t pin) : pin(pin), currentEyePWM(MIN_EYE_LEVEL) {
 Eyes::~Eyes() {}
 
 void Eyes::begin() {
-	DEBUG_PRINTLN(F("Initializing Eyes"));
+	DEBUG_PRINTLN("Initializing Eyes");
 	pinMode(pin, OUTPUT);
 }
 
@@ -75,7 +75,7 @@ void Eyes::processState() {
 			break;
 
 		case S_STARTUP:
-			DEBUG_PRINTLN(F("Starting eye system"));
+			DEBUG_PRINTLN("Starting eye system");
 			state = S_IDLE;
 			break;
 			
@@ -124,7 +124,7 @@ void Eyes::processState() {
 					state = S_FADE_OFF;
 				}
 				else {
-					DEBUG_PRINTLN(F("Eye dim done...."));
+					DEBUG_PRINTLN("Eye dim done....");
 					analogWrite(pin, 0);
 					if (systemShuttingDown) {
 						systemShuttingDown = false;
@@ -181,7 +181,7 @@ void Eyes::processState() {
 			break;
 
 		case S_SHUTDOWN:
-			DEBUG_PRINTLN(F("Shutting down eyes"));
+			DEBUG_PRINTLN("Shutting down eyes");
 			systemShuttingDown = true;
 			state = S_DEACTIVATE_EYES;
 			break;

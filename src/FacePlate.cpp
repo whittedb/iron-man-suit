@@ -30,7 +30,7 @@ FacePlate::~FacePlate() {
 }
 
 void FacePlate::begin() {
-	DEBUG_PRINTLN(F("Initializing faceplate"));
+	DEBUG_PRINTLN("Initializing faceplate");
 
 	eyes.begin();
 
@@ -86,13 +86,13 @@ void FacePlate::processState() {
 			break;
 
 		case S_STARTUP:
-			DEBUG_PRINTLN(F("Starting faceplate system"));
+			DEBUG_PRINTLN("Starting faceplate system");
 			setState(S_OPENING);
 			eyes.startup();
 			break;
 
 		case S_FACEPLATE_REQUEST:
-			DEBUG_PRINTLN(F("Faceplate Request"));
+			DEBUG_PRINTLN("Faceplate Request");
 			if (isOpen()) {
 				setState(S_CLOSING);
 			}
@@ -102,14 +102,14 @@ void FacePlate::processState() {
 			break;
 
 		case S_OPENING:
-			DEBUG_PRINTLN(F("Opening helmet"));
+			DEBUG_PRINTLN("Opening helmet");
 			setState(S_WAIT_FOR_OPEN);
 			servo.write(FACE_POS_OPEN);
 			timer.start(SERVO_DELAY);
 			break;
 
 		case S_CLOSING:
-			DEBUG_PRINTLN(F("Closing helmet"));
+			DEBUG_PRINTLN("Closing helmet");
 			setState(S_WAIT_FOR_CLOSE);
 			servo.write(FACE_POS_CLOSED);
 			timer.start(SERVO_DELAY);
@@ -117,7 +117,7 @@ void FacePlate::processState() {
 
 		case S_WAIT_FOR_OPEN:
 			if(timer.expired()) {
-				DEBUG_PRINTLN(F("Helmet open"));
+				DEBUG_PRINTLN("Helmet open");
 				if (shuttingDown) {
 					eyes.shutdown();
 					shuttingDown = false;
@@ -134,7 +134,7 @@ void FacePlate::processState() {
 
 		case S_WAIT_FOR_CLOSE:
 			if(timer.expired()) {
-				DEBUG_PRINTLN(F("Helmet closed"));
+				DEBUG_PRINTLN("Helmet closed");
 				eyes.activate();
 				sfx.playFx(SFX_HELMET_CLOSE_SND, true);
 				setState(S_WAIT_FOR_CLOSE_CLANG);
@@ -154,7 +154,7 @@ void FacePlate::processState() {
 			break;
 
 		case S_SHUTDOWN:
-			DEBUG_PRINTLN(F("Shutting down faceplate"));
+			DEBUG_PRINTLN("Shutting down faceplate");
 			shuttingDown = true;
 			setState(S_OPENING);
 			break;
