@@ -3,11 +3,9 @@
 // 
 
 #include <Wire.h>
-#include <Adafruit_Soundboard.h>
-#include <avr/pgmspace.h>
-#include "SoundPlayer.h"
 //#define MY_DEBUG
 #include "debug.h"
+#include "SoundPlayer.h"
 
 
 // 0x4B is the default i2c address of the audio amp
@@ -16,11 +14,11 @@ constexpr auto DEFAULT_VOLUME = 25;
 constexpr auto FX_BOARD_SPEED = 9600;
 
 
-SoundPlayer::SoundPlayer(Uart &serial, uint8_t active_pin, uint8_t rst_pin) :
+SoundPlayer::SoundPlayer(SfxUart &serial, uint8_t active_pin, uint8_t rst_pin) :
 	activePin(active_pin), rstPin(rst_pin),
 	fxVolume(DEFAULT_VOLUME),
 	serial(serial),
-	sfx(&serial, NULL, rst_pin) {
+	sfx((Uart *)&serial, NULL, rst_pin) {
 }
 
 SoundPlayer::~SoundPlayer() {}
@@ -29,10 +27,6 @@ void SoundPlayer::begin() {
 	DEBUG_PRINTLN(F("Initializing sound system"));
 	serial.begin(FX_BOARD_SPEED);
 	Wire.begin();
-
-	pinMode(rstPin, INPUT);
-	digitalWrite(rstPin, HIGH);
-	pinMode(activePin, INPUT);
 
 	if (!sfx.reset()) {
 		DEBUG_PRINTLN(F("No SFX board found!!!"));

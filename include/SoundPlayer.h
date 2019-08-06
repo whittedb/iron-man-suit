@@ -3,10 +3,11 @@
 
 #include <Adafruit_Soundboard.h>
 #include <Queue.h>
+#include "SfxUart.h"
 
 class SoundPlayer {
 	public:
-		SoundPlayer(Uart &serial, uint8_t active_pin, uint8_t rst_pin);
+		SoundPlayer(SfxUart &serial, uint8_t active_pin, uint8_t rst_pin);
 		~SoundPlayer();
 
 		void begin();
@@ -33,7 +34,7 @@ class SoundPlayer {
 		uint8_t activePin;
 		uint8_t rstPin;
 		uint8_t fxVolume;		// We'll track the volume level in this variable.
-		Uart &serial;
+		SfxUart &serial;
 		Adafruit_Soundboard sfx;
 		Queue<const char *> fxQue;
 		bool initialized = false;

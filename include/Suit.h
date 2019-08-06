@@ -4,11 +4,11 @@
 #pragma once
 
 #include <Uart.h>
+#include <Adafruit_NeoPixel.h>
 #include "ArcReactor.h"
 #include "FacePlate.h"
 #include "SoundPlayer.h"
 #include "Repulsor.h"
-#include <Adafruit_NeoPixel.h>
 
 class Suit {
     public:
@@ -19,7 +19,7 @@ class Suit {
             uint8_t led_ring_pin,
             uint8_t repulsor_left_i2c_address,
             uint8_t repulsor_right_i2c_address,
-            Uart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin);
+            SfxUart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin);
 
         void begin();
         void processState();

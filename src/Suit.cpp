@@ -25,7 +25,7 @@ Suit::Suit(
     uint8_t led_ring_pin,
 	uint8_t repulsor_left_i2c_address,
 	uint8_t repulsor_right_i2c_address,
-	Uart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin) :
+	SfxUart &sfx_serial, uint8_t sfx_playing_pin, uint8_t sfx_rst_pin) :
 		powerTogglePin(power_toggle_pin),
 		ring(LED_RING_COUNT, led_ring_pin, NEO_GRBW+NEO_KHZ800),
 		sfx(sfx_serial, sfx_playing_pin, sfx_rst_pin),
