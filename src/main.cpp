@@ -17,12 +17,12 @@
 #include "SfxUart.h"
 
 
-constexpr auto POWER_TOGGLE_PIN = 3;
-constexpr auto EYE_PIN = 6;
-constexpr auto SERVO_PIN = 9;
-constexpr auto FACEPLATE_ACTIVATE_PIN = 2;
-constexpr auto LED_RING_PIN = 4;
-constexpr auto SFX_PLAYING_PIN = 7;
+constexpr auto POWER_TOGGLE_PIN = 10;
+constexpr auto EYE_PIN = 8;
+constexpr auto SERVO_PIN = 5;
+constexpr auto FACEPLATE_ACTIVATE_PIN = 9;
+constexpr auto LED_RING_PIN = 6;
+constexpr auto SFX_PLAYING_PIN = A5;
 constexpr auto SFX_TX_PIN = 13ul;
 constexpr auto SFX_RX_PIN = 12ul;
 constexpr auto SFX_RST_PIN = 11ul;

@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Uart.h>
-#include <Adafruit_NeoPixel.h>
+#include <Adafruit_NeoPixel_ZeroDMA.h>
 #include "ArcReactor.h"
 #include "FacePlate.h"
 #include "SoundPlayer.h"
@@ -26,7 +26,7 @@ class Suit {
         void setAttackMode(bool attack_mode);
         bool isInAttackMode();
         bool isPoweredUp();
-        Adafruit_NeoPixel getRing() { return ring; }
+        Adafruit_NeoPixel_ZeroDMA getRing() { return ring; }
         SoundPlayer getSoundPlayer() { return sfx; }
 
     private:
@@ -39,7 +39,7 @@ class Suit {
         };
 
         uint8_t powerTogglePin;
-        Adafruit_NeoPixel ring;
+        Adafruit_NeoPixel_ZeroDMA ring;
         SoundPlayer sfx;
         FacePlate facePlate;
         ArcReactor arcReactor;
