@@ -38,8 +38,8 @@ class FacePlate {
 			S_SHUTDOWN
 		};
 
-		void setState(State new_state);
-		State getState();
+		void setStateAtomic(State new_state);
+		State getStateAtomic();
 		void debounceButton();
 		static void debounceButtonMarshaller() { instance->debounceButton(); }
 
@@ -54,7 +54,7 @@ class FacePlate {
 		bool firstTime = true;
 		bool shuttingDown = false;
 		MyTimer timer;
-		State state = S_OFF;
+		volatile State state = S_OFF;
 
 		static FacePlate *instance;
 };

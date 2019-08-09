@@ -2,7 +2,7 @@
 
 #include "MyTimer.h"
 #include <Adafruit_LIS3DH.h>
-#include <Adafruit_Neopixel.h>
+#include <Adafruit_NeoPixel_ZeroDMA.h>
 
 
 class Suit;

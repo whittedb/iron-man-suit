@@ -7,7 +7,7 @@
 	#include "WProgram.h"
 #endif
 
-#include <Adafruit_Neopixel.h>
+#include <Adafruit_NeoPixel_ZeroDMA.h>
 
 
 class Suit;

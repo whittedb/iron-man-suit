@@ -3,7 +3,6 @@
 //
 
 #include "Suit.h"
-#include "Atomic.h"
 //#define MY_DEBUG
 #include "debug.h"
 
@@ -118,23 +117,29 @@ void Suit::setAttackMode(bool attack_mode) {
 }
 
 bool Suit::isPoweredUp() {
-	Atomic a;
-	return poweredUp;
+	__disable_irq();
+	bool v = poweredUp;
+	__enable_irq();
+	return v;
 }
 
 void Suit::setPoweredUp(bool powered_up) {
-	Atomic a;
+	__disable_irq();
 	poweredUp = powered_up;
+	__enable_irq();
 }
 
 void Suit::setState(State new_state) {
-	Atomic a;
+	__disable_irq();
 	state = new_state;
+	__enable_irq();
 }
 
 Suit::State Suit::getState() {
-	Atomic a;
-	return state;
+	__disable_irq();
+	State v = state;
+	__enable_irq();
+	return v;
 }
 
 bool Suit::isInAttackMode() {
@@ -144,9 +149,12 @@ bool Suit::isInAttackMode() {
 void Suit::debounceButton() {
 	static unsigned long last_interrupt_time = 0;
 	unsigned long interrupt_time = millis();
+
+	__disable_irq();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 200) {
         state = S_POWER_TOGGLE;
 	}
 	last_interrupt_time = interrupt_time;
+	__enable_irq();
 }

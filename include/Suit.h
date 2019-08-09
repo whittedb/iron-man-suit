@@ -45,7 +45,7 @@ class Suit {
         ArcReactor arcReactor;
         Repulsor repulsorLeft;
         Repulsor repulsorRight;
-        State state = S_OFF;
+        volatile State state = S_OFF;
         bool poweredUp = false;
         bool attackMode = false;
 		static Suit *instance;

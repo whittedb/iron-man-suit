@@ -1,7 +1,6 @@
 // 
 // 
 //
-#include "Atomic.h"
 #include "FacePlate.h"
 #include "Sounds.h"
 // Turn on serial output debug statements for this file only
@@ -43,42 +42,45 @@ void FacePlate::begin() {
 }
 
 void FacePlate::startup() {
-	Atomic a;
+	__disable_irq();
 	if (state == S_OFF) {
-		setState(S_STARTUP);
+		state = S_STARTUP;
 	}
+	__enable_irq();
 }
 
 void FacePlate::shutdown() {
-	Atomic a;
+	__disable_irq();
 	if (state != S_OFF) {
-		setState(S_SHUTDOWN);
+		state = S_SHUTDOWN;
 	}
+	__enable_irq();
 }
 
 void FacePlate::open() {
-	Atomic a;
+	__disable_irq();
 	if (state == S_IDLE && !faceplateOpen) {
-		setState(S_OPENING);
+		state = S_OPENING;
 	}
+	__enable_irq();
 }
 
 void FacePlate::close() {
-	Atomic a;
+	__disable_irq();
 	if (state == S_IDLE && faceplateOpen) {
-		setState(S_CLOSING);
+		state = S_CLOSING;
 	}
+	__enable_irq();
 }
 
 bool FacePlate::isIdle() {
-	Atomic a;
-	return state == S_IDLE;
+	return getStateAtomic() == S_IDLE;
 }
 
 void FacePlate::processState() {
 	eyes.processState();
 
-	switch(getState()) {
+	switch(getStateAtomic()) {
 		case S_OFF:
 			break;
 
@@ -87,30 +89,30 @@ void FacePlate::processState() {
 
 		case S_STARTUP:
 			DEBUG_PRINTLN("Starting faceplate system");
-			setState(S_OPENING);
+			setStateAtomic(S_OPENING);
 			eyes.startup();
 			break;
 
 		case S_FACEPLATE_REQUEST:
 			DEBUG_PRINTLN("Faceplate Request");
 			if (isOpen()) {
-				setState(S_CLOSING);
+				setStateAtomic(S_CLOSING);
 			}
 			else {
-				setState(S_OPENING);
+				setStateAtomic(S_OPENING);
 			}
 			break;
 
 		case S_OPENING:
 			DEBUG_PRINTLN("Opening helmet");
-			setState(S_WAIT_FOR_OPEN);
+			setStateAtomic(S_WAIT_FOR_OPEN);
 			servo.write(FACE_POS_OPEN);
 			timer.start(SERVO_DELAY);
 			break;
 
 		case S_CLOSING:
 			DEBUG_PRINTLN("Closing helmet");
-			setState(S_WAIT_FOR_CLOSE);
+			setStateAtomic(S_WAIT_FOR_CLOSE);
 			servo.write(FACE_POS_CLOSED);
 			timer.start(SERVO_DELAY);
 			break;
@@ -122,11 +124,11 @@ void FacePlate::processState() {
 					eyes.shutdown();
 					shuttingDown = false;
 					firstTime = true;
-					setState(S_OFF);
+					setStateAtomic(S_OFF);
 				}
 				else {
 					eyes.deactivate();
-					setState(S_IDLE);
+					setStateAtomic(S_IDLE);
 				}
 				faceplateOpen = true;
 			}
@@ -137,7 +139,7 @@ void FacePlate::processState() {
 				DEBUG_PRINTLN("Helmet closed");
 				eyes.activate();
 				sfx.playFx(SFX_HELMET_CLOSE_SND, true);
-				setState(S_WAIT_FOR_CLOSE_CLANG);
+				setStateAtomic(S_WAIT_FOR_CLOSE_CLANG);
 				timer.start(1000);
 			}
 			break;
@@ -149,36 +151,41 @@ void FacePlate::processState() {
 					firstTime = false;
 				}
 				faceplateOpen = false;
-				setState(S_IDLE);
+				setStateAtomic(S_IDLE);
 			}
 			break;
 
 		case S_SHUTDOWN:
 			DEBUG_PRINTLN("Shutting down faceplate");
 			shuttingDown = true;
-			setState(S_OPENING);
+			setStateAtomic(S_OPENING);
 			break;
 	}
 }
 
-void FacePlate::setState(State new_state) {
-	Atomic a;
+void FacePlate::setStateAtomic(State new_state) {
+	__disable_irq();
 	state = new_state;
+	__enable_irq();
 }
 
-FacePlate::State FacePlate::getState() {
-	Atomic a;
-	return state;
+FacePlate::State FacePlate::getStateAtomic() {
+	__disable_irq();
+	State v = state;
+	__enable_irq();
+	return v;
 }
 
 void FacePlate::debounceButton() {
 	static unsigned long last_interrupt_time = 0;
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	__disable_irq();
 	if (interrupt_time - last_interrupt_time > 200) {
 		if (state == S_IDLE) {
 			state = S_FACEPLATE_REQUEST;
 		}
 	}
 	last_interrupt_time = interrupt_time;
+	__enable_irq();
 }
