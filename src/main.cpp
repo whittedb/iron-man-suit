@@ -5,9 +5,6 @@
 */
 
 #include <Arduino.h>
-#include <wiring_private.h>
-#include <Wire.h>
-#include <Queue.h>
 // Turn on serial output debug statements for all code
 //#define MY_DEBUG
 #include "Suit.h"
@@ -58,7 +55,7 @@ void setup() {
 	DEBUG_WAIT_FOR_INIT;
 	DEBUG_PRINTLN("Starting system");
 	suit.begin();
-	DEBUG_PRINTF("FreeMem: %u\r\n", freeMemory());
+	DEBUG_PRINTF(0, "FreeMem: %u\r\n", freeMemory());
 }
 
 void loop() {

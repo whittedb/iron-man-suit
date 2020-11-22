@@ -56,9 +56,9 @@ void Repulsor::processState() {
             if (initialized) {
                 sensors_event_t event;
                 lis.getEvent(&event);
-                DEBUG_PRINTF("Pitch: %d\r\n", event.orientation.pitch);
-                DEBUG_PRINTF("Roll: %d\r\n", event.orientation.roll);
-                DEBUG_PRINTF("Heading: %d\r\n", event.orientation.heading);
+                DEBUG_PRINTF(0, "Pitch: %d\r\n", event.orientation.pitch);
+                DEBUG_PRINTF(0, "Roll: %d\r\n", event.orientation.roll);
+                DEBUG_PRINTF(0, "Heading: %d\r\n", event.orientation.heading);
                 DEBUG_PRINTLN("");
                 if (event.orientation.pitch > 70.0) {
                     state = S_FIRE;
@@ -117,9 +117,9 @@ void Repulsor::processState() {
             if (initialized) {
                 sensors_event_t event;
                 lis.getEvent(&event);
-                DEBUG_PRINTF("Pitch: %d\r\n", event.orientation.pitch);
-                DEBUG_PRINTF("Roll: %d\r\n", event.orientation.roll);
-                DEBUG_PRINTF("Heading: %d\r\n", event.orientation.heading);
+                DEBUG_PRINTF(0, "Pitch: %d\r\n", event.orientation.pitch);
+                DEBUG_PRINTF(0, "Roll: %d\r\n", event.orientation.roll);
+                DEBUG_PRINTF(0, "Heading: %d\r\n", event.orientation.heading);
                 DEBUG_PRINTLN("");
                 if (event.orientation.pitch < 0.0 && timer.expired()) {
                     suit.setAttackMode(false);

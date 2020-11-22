@@ -2,7 +2,7 @@
 #pragma once
 
 #include <Adafruit_Soundboard.h>
-#include <Queue.h>
+#include <ArduinoQueue.h>
 #include "SfxUart.h"
 
 class SoundPlayer {
@@ -36,7 +36,7 @@ class SoundPlayer {
 		uint8_t fxVolume;		// We'll track the volume level in this variable.
 		SfxUart &serial;
 		Adafruit_Soundboard sfx;
-		Queue<const char *> fxQue;
+		ArduinoQueue<const char *> fxQue;
 		bool initialized = false;
 
 		bool playTrackName(const char *track);

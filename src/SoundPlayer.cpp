@@ -1,7 +1,6 @@
 // 
 // 
 // 
-
 #include <Wire.h>
 //#define MY_DEBUG
 #include "debug.h"
@@ -58,7 +57,7 @@ bool SoundPlayer::setVolume(uint8_t v) {
 	if (v > 63) v = 63;
 	if (v < 0) v = 0;
 
-	DEBUG_PRINTF("Vol: %d\r\n", v);
+	DEBUG_PRINTF(0, "Vol: %d", v);
 
 	Wire.beginTransmission(MAX9744_I2CADDR);
 	Wire.write(v);
@@ -99,7 +98,7 @@ bool SoundPlayer::playTrackName(const char* track) {
 	if (initialized) {
 		bool success = sfx.playTrack((char*)track);
 		if (!success) {
-			DEBUG_PRINTF("Failed to play track: %d\r\n", track);
+			DEBUG_PRINTF(0, "Failed to play track: %d\r\n", track);
 		}
 
 		return success;

@@ -1,17 +1,19 @@
 #pragma once
+#include <string>
 
 #ifdef RTT_DEBUG
     #include "SEGGER_RTT.h"
     #define DEBUG_BEGIN
     #define DEBUG_WAIT_FOR_INIT
 
-    #define DEBUG_PRINT(id, x) SEGGER_RTT_WriteString(id, x)
-    #define DEBUG_PRINTLN(id, x) SEGGER_RTT_WriteString(id, x "\r\n")
-    #define DEBUG_PRINTF(id, x, ...) SEGGER_RTT_printf(id, x, __VA_ARGS__)
-
-    #define DEBUG_PRINT(x) SEGGER_RTT_WriteString(0, x)
-    #define DEBUG_PRINTLN(x) SEGGER_RTT_WriteString(0, x "\r\n")
-    #define DEBUG_PRINTF(x, ...) SEGGER_RTT_printf(0, x, __VA_ARGS__)
+    void DEBUG_PRINT(const char *msg, unsigned id=0) {SEGGER_RTT_WriteString(id, msg);}
+    void DEBUG_PRINTLN(const char *msg, unsigned id=0) {SEGGER_RTT_WriteString(id, std::string(msg).append("\r\n").c_str());}
+    static void DEBUG_PRINTF(unsigned id, const char *fmt, ...) {
+        va_list args;
+        va_start(args, fmt);
+        SEGGER_RTT_printf(id, fmt, args);
+        va_end(args);
+    }
 #else
     #ifdef MY_DEBUG
         #ifndef DEBUG_SERIAL_SPEED
@@ -19,23 +21,20 @@
         #endif
         #define DEBUG_BEGIN Serial.begin(DEBUG_SERIAL_SPEED)
         #define DEBUG_WAIT_FOR_INIT while(!Serial){}
-        #define DEBUG_PRINT(id, x) Serial.print(F(x))
-        #define DEBUG_PRINTLN(id, x) Serial.println(F(x))
-        #define DEBUG_PRINTF(id, x, ...)
-
-        #define DEBUG_PRINT(x) Serial.print(F(x))
-        #define DEBUG_PRINTLN(x) Serial.println(F(x))
-        #define DEBUG_PRINTF(x, ...)
+        #define DEBUG_PRINT(msg, id) {Serial.print(F(msg));}
+        #define DEBUG_PRINTLN(msg,id) {Serial.println(F(msg));}
+        static void DEBUG_PRINTF(unsigned id, const char *fmt, ...) {
+            va_list args;
+            va_start(args, fmt);
+            Serial.printf(fmt, args);
+            va_end(args);
+        }
     #else
         #define DEBUG_BEGIN
         #define DEBUG_WAIT_FOR_INIT
-        #define DEBUG_PRINT(id, x)
-        #define DEBUG_PRINTLN(id, x)
-        #define DEBUG_PRINTF(id, x)
-
-        #define DEBUG_PRINT(x)
-        #define DEBUG_PRINTLN(x)
-        #define DEBUG_PRINTF(x)
+        #define DEBUG_PRINT(...)
+        #define DEBUG_PRINTLN(...)
+        #define DEBUG_PRINTF(...)
     #endif
 #endif
 
