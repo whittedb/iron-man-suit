@@ -6,7 +6,6 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Queue.h>
 #include <avr/pgmspace.h>
 // Turn on serial output debug statements for all code
 //#define MY_DEBUG
